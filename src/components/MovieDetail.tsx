@@ -1,4 +1,4 @@
-import { X, Star, Shield, Clock, Calendar, Globe, Languages, DollarSign, TrendingUp, Bookmark, ChevronRight } from 'lucide-react';
+import { X, Star, Shield, Clock, Calendar, Globe, Languages, DollarSign, TrendingUp, Bookmark } from 'lucide-react';
 import { Movie } from '../types';
 
 interface MovieDetailProps {
@@ -119,51 +119,6 @@ export default function MovieDetail({ movie, onClose, onWatchlistToggle, isInWat
                   Synopsis
                 </h3>
                 <p className="text-slate-300 text-sm leading-relaxed">{movie.synopsis}</p>
-              </div>
-
-              {/* Director & Writers */}
-              <div>
-                <h3 className="text-white font-semibold text-sm uppercase tracking-widest mb-3 flex items-center gap-2">
-                  <span className="w-4 h-0.5 bg-amber-500 rounded" />
-                  Filmmakers
-                </h3>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-3 text-sm">
-                    <span className="text-slate-500 w-16 flex-shrink-0">Director</span>
-                    <ChevronRight size={12} className="text-slate-600" />
-                    <span className="text-slate-200 font-medium">{movie.director}</span>
-                  </div>
-                  <div className="flex items-start gap-3 text-sm">
-                    <span className="text-slate-500 w-16 flex-shrink-0 pt-0.5">
-                      {movie.writers.length > 1 ? 'Writers' : 'Writer'}
-                    </span>
-                    <ChevronRight size={12} className="text-slate-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-slate-200 font-medium">{movie.writers.join(', ')}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Top Cast */}
-              <div>
-                <h3 className="text-white font-semibold text-sm uppercase tracking-widest mb-4 flex items-center gap-2">
-                  <span className="w-4 h-0.5 bg-amber-500 rounded" />
-                  Top Cast
-                </h3>
-                <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-                  {movie.cast.map((member) => (
-                    <div key={member.id} className="flex-shrink-0 text-center w-20">
-                      <div className="w-16 h-16 mx-auto mb-2 rounded-full overflow-hidden border-2 border-white/10 hover:border-amber-500/50 transition-all">
-                        <img
-                          src={member.avatar}
-                          alt={member.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <p className="text-white text-xs font-semibold leading-tight line-clamp-2">{member.name}</p>
-                      <p className="text-slate-500 text-[10px] mt-0.5 leading-tight line-clamp-2">{member.character}</p>
-                    </div>
-                  ))}
-                </div>
               </div>
             </div>
 

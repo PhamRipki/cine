@@ -1,135 +1,296 @@
-import { useState, useMemo } from 'react';
-import { Movie, TabType, FilterState } from './types';
-import { movies, heroMovie } from './data/movies';
+import { useState, useEffect } from 'react';
+import { Movie } from './types';
+import { movies as fallbackMovies, heroMovie as fallbackHero } from './data/movies';
+import { useMovies } from './hooks/useMovies';
+import { useWatchlist } from './hooks/useWatchlist';
+import { useAuth } from './hooks/useAuth';
 import Header from './components/Header';
 import HeroSpotlight from './components/HeroSpotlight';
-import ContentTabs from './components/ContentTabs';
-import FilterPanel from './components/FilterPanel';
+import MovieGrid from './components/MovieGrid';
+import GenreBrowser from './components/GenreBrowser';
 import MovieDetail from './components/MovieDetail';
 import WatchlistPanel from './components/WatchlistPanel';
-import SearchResults from './components/SearchResults';
+import AuthModal from './components/AuthModal';
+import AdvancedSearch from './components/AdvancedSearch';
 
 export default function App() {
+  const { user, signOut } = useAuth();
+  const { movies: apiMovies, heroMovie: apiHero, loading, error } = useMovies();
+  const { watchlist, toggleWatchlist: toggleWatchlistHook, syncWithSupabase } = useWatchlist(user?.id);
+  
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
-  const [activeTab, setActiveTab] = useState<TabType>('trending');
-  const [watchlist, setWatchlist] = useState<Set<number>>(new Set());
   const [showWatchlist, setShowWatchlist] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filters, setFilters] = useState<FilterState>({
-    genres: [],
-    yearMin: 2020,
-    yearMax: 2024,
-    minRating: 0,
-  });
+  const [viewMode, setViewMode] = useState<'categories' | 'genres'>('categories');
+  const [filteredMovies, setFilteredMovies] = useState<Partial<Movie>[]>([]);
+  const [isSearchActive, setIsSearchActive] = useState(false);
 
-  const toggleWatchlist = (movie: Movie) => {
-    setWatchlist((prev) => {
-      const next = new Set(prev);
-      if (next.has(movie.id)) next.delete(movie.id);
-      else next.add(movie.id);
-      return next;
-    });
+  // Use API movies if available, otherwise fallback
+  const movies = apiMovies.length > 0 ? apiMovies : fallbackMovies;
+  const heroMovie = apiHero || fallbackHero;
+
+  // Use filtered movies if search is active, otherwise use all movies
+  const displayMovies = isSearchActive ? filteredMovies : movies;
+
+  // Separate movies by category
+  const trendingMovies = displayMovies.filter(m => m.category === 'trending');
+  const anticipatedMovies = displayMovies.filter(m => m.category === 'anticipated');
+  const boxofficeMovies = displayMovies.filter(m => m.category === 'boxoffice');
+
+  // Sync watchlist when user logs in
+  useEffect(() => {
+    if (user?.id) {
+      syncWithSupabase(user.id);
+    }
+  }, [user?.id]);
+
+  const toggleWatchlist = (movie: Partial<Movie>) => {
+    toggleWatchlistHook(movie.id!);
   };
 
-  const watchlistMovies = movies.filter((m) => watchlist.has(m.id));
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
-  const searchResults = useMemo(() => {
-    if (!searchQuery.trim()) return [];
-    const q = searchQuery.toLowerCase();
-    return movies.filter(
-      (m) =>
-        m.title.toLowerCase().includes(q) ||
-        m.director.toLowerCase().includes(q) ||
-        m.cast.some((c) => c.name.toLowerCase().includes(q)) ||
-        m.genre.some((g) => g.toLowerCase().includes(q))
+  const handleAdvancedSearchResults = (results: Partial<Movie>[]) => {
+    setFilteredMovies(results);
+    setIsSearchActive(true);
+    setShowAdvancedSearch(false);
+  };
+
+  const handleSearchQueryChange = (query: string) => {
+    setSearchQuery(query);
+    if (!query.trim()) {
+      setIsSearchActive(false);
+      setFilteredMovies([]);
+    }
+  };
+
+  const watchlistMovies = displayMovies.filter((m) => watchlist.has(m.id!));
+
+  // Debug logs
+  useEffect(() => {
+    console.log('=== APP STATE ===');
+    console.log('User:', user?.email || 'Not logged in');
+    console.log('Total movies:', displayMovies.length);
+    console.log('Trending:', trendingMovies.length);
+    console.log('Anticipated:', anticipatedMovies.length);
+    console.log('Box Office:', boxofficeMovies.length);
+    console.log('Search active:', isSearchActive);
+    console.log('Loading:', loading);
+    console.log('Error:', error);
+    console.log('================');
+  }, [displayMovies, trendingMovies, anticipatedMovies, boxofficeMovies, loading, error, user, isSearchActive]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0d0f14] text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-slate-400 text-lg">Loading movies from TMDB...</p>
+          <p className="text-slate-600 text-sm mt-2">Please wait...</p>
+        </div>
+      </div>
     );
-  }, [searchQuery]);
-
-  const filteredMovies = useMemo(() => {
-    return movies.filter((m) => {
-      if (filters.genres.length > 0 && !m.genre.some((g) => filters.genres.includes(g))) return false;
-      if (m.year < filters.yearMin || m.year > filters.yearMax) return false;
-      if (m.rating < filters.minRating) return false;
-      return true;
-    });
-  }, [filters]);
-
-  const showSearch = searchQuery.trim().length > 0;
+  }
 
   return (
     <div className="min-h-screen bg-[#0d0f14] text-white">
+      {/* Header */}
       <Header
         searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
+        onSearchChange={handleSearchQueryChange}
         watchlistCount={watchlist.size}
         onWatchlistClick={() => setShowWatchlist(true)}
         onTop250Click={() => {}}
+        onAdvancedSearchClick={() => setShowAdvancedSearch(true)}
+        onAuthClick={() => setShowAuthModal(true)}
+        user={user}
+        onSignOut={handleSignOut}
       />
 
-      {showSearch ? (
-        <SearchResults
-          movies={searchResults}
-          query={searchQuery}
-          onMovieClick={setSelectedMovie}
+      {/* Hero Section */}
+      <HeroSpotlight
+        movie={heroMovie as Movie}
+        onMovieClick={setSelectedMovie}
+        onWatchlistAdd={toggleWatchlist}
+        isInWatchlist={watchlist.has(heroMovie.id!)}
+      />
+
+      {/* API Status Banner */}
+      {error && apiMovies.length === 0 && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 flex items-start gap-3">
+            <span className="text-2xl">⚠️</span>
+            <div className="flex-1">
+              <h3 className="font-semibold text-amber-400 mb-1">Using Fallback Data</h3>
+              <p className="text-sm text-slate-300">
+                Could not connect to TMDB API. Showing sample movies instead.
+              </p>
+              <p className="text-xs text-slate-500 mt-1">
+                Check console (F12) for details or open test-api.html to test your API key.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Success Banner */}
+      {!error && apiMovies.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 flex items-start gap-3">
+            <span className="text-2xl">✅</span>
+            <div className="flex-1">
+              <h3 className="font-semibold text-green-400 mb-1">Connected to TMDB API</h3>
+              <p className="text-sm text-slate-300">
+                Showing {apiMovies.length} real movies from The Movie Database
+                {user && <span className="ml-2">• Logged in as <strong>{user.email}</strong></span>}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Search Results Banner */}
+      {isSearchActive && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 flex items-start gap-3">
+            <span className="text-2xl">🔍</span>
+            <div className="flex-1">
+              <h3 className="font-semibold text-amber-400 mb-1">Search Results</h3>
+              <p className="text-sm text-slate-300">
+                Found {filteredMovies.length} movie{filteredMovies.length !== 1 ? 's' : ''}
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                setIsSearchActive(false);
+                setFilteredMovies([]);
+                setSearchQuery('');
+              }}
+              className="text-amber-400 hover:text-amber-300 text-sm font-semibold"
+            >
+              Clear Search
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* View Mode Toggle */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="flex items-center gap-2 bg-white/5 rounded-lg p-1 w-fit">
+          <button
+            onClick={() => setViewMode('categories')}
+            className={`px-4 py-2 rounded-md font-medium transition-all ${
+              viewMode === 'categories'
+                ? 'bg-amber-500 text-black'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            📊 By Category
+          </button>
+          <button
+            onClick={() => setViewMode('genres')}
+            className={`px-4 py-2 rounded-md font-medium transition-all ${
+              viewMode === 'genres'
+                ? 'bg-amber-500 text-black'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            🎭 By Genre
+          </button>
+        </div>
+      </div>
+
+      {/* Content based on view mode */}
+      {viewMode === 'genres' ? (
+        <GenreBrowser
+          movies={displayMovies}
+          onMovieClick={(m) => setSelectedMovie(m as Movie)}
+          onWatchlistToggle={toggleWatchlist}
+          watchlist={watchlist}
         />
       ) : (
         <>
-          <HeroSpotlight
-            movie={heroMovie}
-            onMovieClick={setSelectedMovie}
-            onWatchlistAdd={toggleWatchlist}
-            isInWatchlist={watchlist.has(heroMovie.id)}
-          />
-
-          <div className="py-4">
-            <FilterPanel filters={filters} onFiltersChange={setFilters} />
-          </div>
-
-          <ContentTabs
-            movies={filteredMovies}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            onMovieClick={setSelectedMovie}
+          {/* Movie Grids */}
+          <MovieGrid
+            movies={trendingMovies}
+            title="🔥 Trending Today"
+            onMovieClick={(m) => setSelectedMovie(m as Movie)}
             onWatchlistToggle={toggleWatchlist}
             watchlist={watchlist}
           />
 
-          {/* Stats strip */}
-          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {[
-                { label: 'Movies in Database', value: movies.length.toLocaleString() },
-                { label: 'Average Rating', value: (movies.reduce((a, m) => a + m.rating, 0) / movies.length).toFixed(1) },
-                { label: 'Combined Box Office', value: '$8.2B+' },
-                { label: 'Genres Covered', value: '15' },
-              ].map((stat) => (
-                <div key={stat.label} className="bg-[#13161f] rounded-xl p-4 border border-white/5 text-center">
-                  <div className="text-2xl font-bold text-amber-400">{stat.value}</div>
-                  <div className="text-slate-500 text-xs mt-1">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </section>
+          <MovieGrid
+            movies={anticipatedMovies}
+            title="⚡ Most Anticipated"
+            onMovieClick={(m) => setSelectedMovie(m as Movie)}
+            onWatchlistToggle={toggleWatchlist}
+            watchlist={watchlist}
+          />
 
-          {/* Footer */}
-          <footer className="border-t border-white/5 py-8 mt-4">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-amber-500 rounded flex items-center justify-center">
-                    <span className="text-black text-xs font-bold">C</span>
-                  </div>
-                  <span className="text-white font-bold">Cine<span className="text-amber-400">Data</span></span>
-                  <span className="text-slate-600 text-sm ml-1">— The Modern Movie Database</span>
-                </div>
-                <p className="text-slate-600 text-xs">
-                  Data sourced for demonstration. All rights to respective studios.
-                </p>
-              </div>
-            </div>
-          </footer>
+          <MovieGrid
+            movies={boxofficeMovies}
+            title="💰 Box Office Top Sellers"
+            onMovieClick={(m) => setSelectedMovie(m as Movie)}
+            onWatchlistToggle={toggleWatchlist}
+            watchlist={watchlist}
+          />
         </>
       )}
+
+      {/* Stats */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {[
+            { label: 'Movies in Database', value: displayMovies.length.toLocaleString() },
+            { label: 'Average Rating', value: (displayMovies.reduce((a, m) => a + (m.rating || 0), 0) / displayMovies.length).toFixed(1) },
+            { label: 'Data Source', value: apiMovies.length > 0 ? 'TMDB API' : 'Fallback' },
+            { label: 'Your Watchlist', value: watchlist.size.toString() },
+          ].map((stat) => (
+            <div key={stat.label} className="bg-[#13161f] rounded-xl p-4 border border-white/5 text-center">
+              <div className="text-2xl font-bold text-amber-400">{stat.value}</div>
+              <div className="text-slate-500 text-xs mt-1">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-white/5 py-8 mt-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-amber-500 rounded flex items-center justify-center">
+                <span className="text-black text-xs font-bold">C</span>
+              </div>
+              <span className="text-white font-bold">Cine<span className="text-amber-400">Data</span></span>
+              <span className="text-slate-600 text-sm ml-1">— The Modern Movie Database</span>
+            </div>
+            <p className="text-slate-600 text-xs">
+              Data from TMDB API • {displayMovies.length} movies loaded
+              {user && <span className="ml-2">• Synced with cloud</span>}
+            </p>
+          </div>
+        </div>
+      </footer>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={() => setShowAuthModal(false)}
+      />
+
+      {/* Advanced Search Modal */}
+      <AdvancedSearch
+        isOpen={showAdvancedSearch}
+        onClose={() => setShowAdvancedSearch(false)}
+        movies={movies}
+        onResults={handleAdvancedSearchResults}
+      />
 
       {/* Movie Detail Modal */}
       {selectedMovie && (
@@ -144,7 +305,7 @@ export default function App() {
       {/* Watchlist Drawer */}
       {showWatchlist && (
         <WatchlistPanel
-          movies={watchlistMovies}
+          movies={watchlistMovies as Movie[]}
           onClose={() => setShowWatchlist(false)}
           onMovieClick={(m) => { setSelectedMovie(m); setShowWatchlist(false); }}
           onRemove={toggleWatchlist}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Search, Bookmark, ChevronDown, Film, Star, X } from 'lucide-react';
+import { Search, Bookmark, ChevronDown, Film, Star, X, SlidersHorizontal, User, LogOut } from 'lucide-react';
 import { allGenres } from '../data/movies';
+import { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface HeaderProps {
   searchQuery: string;
@@ -8,11 +9,26 @@ interface HeaderProps {
   watchlistCount: number;
   onWatchlistClick: () => void;
   onTop250Click: () => void;
+  onAdvancedSearchClick: () => void;
+  onAuthClick: () => void;
+  user: SupabaseUser | null;
+  onSignOut: () => void;
 }
 
-export default function Header({ searchQuery, onSearchChange, watchlistCount, onWatchlistClick, onTop250Click }: HeaderProps) {
+export default function Header({ 
+  searchQuery, 
+  onSearchChange, 
+  watchlistCount, 
+  onWatchlistClick, 
+  onTop250Click,
+  onAdvancedSearchClick,
+  onAuthClick,
+  user,
+  onSignOut
+}: HeaderProps) {
   const [genreOpen, setGenreOpen] = useState(false);
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 bg-[#0d0f14]/95 backdrop-blur-md border-b border-white/5">
@@ -48,6 +64,14 @@ export default function Header({ searchQuery, onSearchChange, watchlistCount, on
                 </button>
               )}
             </div>
+            {/* Advanced Search Button */}
+            <button
+              onClick={onAdvancedSearchClick}
+              className="absolute right-12 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-400 transition-colors"
+              title="Advanced Search"
+            >
+              <SlidersHorizontal size={16} />
+            </button>
           </div>
 
           {/* Nav Items */}
@@ -104,6 +128,49 @@ export default function Header({ searchQuery, onSearchChange, watchlistCount, on
                 </span>
               )}
             </button>
+
+            {/* User Menu */}
+            {user ? (
+              <div className="relative ml-2">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white px-3 py-2 rounded-lg text-sm font-medium transition-all"
+                >
+                  <User size={14} />
+                  <span className="max-w-[100px] truncate">
+                    {user.user_metadata?.full_name || user.email?.split('@')[0]}
+                  </span>
+                  <ChevronDown size={14} className={`transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {userMenuOpen && (
+                  <div className="absolute top-full right-0 mt-1 w-48 bg-[#1a1d26] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
+                    <div className="p-2">
+                      <div className="px-3 py-2 text-xs text-slate-500 border-b border-white/5">
+                        {user.email}
+                      </div>
+                      <button
+                        onClick={() => {
+                          onSignOut();
+                          setUserMenuOpen(false);
+                        }}
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-all mt-1"
+                      >
+                        <LogOut size={14} />
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={onAuthClick}
+                className="flex items-center gap-1.5 bg-white/5 hover:bg-white/10 text-white px-3 py-2 rounded-lg text-sm font-medium transition-all ml-2"
+              >
+                <User size={14} />
+                Sign In
+              </button>
+            )}
           </nav>
 
           {/* Mobile watchlist */}
@@ -121,9 +188,15 @@ export default function Header({ searchQuery, onSearchChange, watchlistCount, on
         </div>
       </div>
 
-      {/* Overlay to close genre dropdown */}
-      {genreOpen && (
-        <div className="fixed inset-0 z-40" onClick={() => setGenreOpen(false)} />
+      {/* Overlay to close dropdowns */}
+      {(genreOpen || userMenuOpen) && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => {
+            setGenreOpen(false);
+            setUserMenuOpen(false);
+          }} 
+        />
       )}
     </header>
   );

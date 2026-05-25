@@ -1,3 +1,4 @@
+# Logs
 logs
 *.log
 npm-debug.log*
@@ -6,11 +7,22 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+
+# Build output
 dist
 dist-ssr
 *.local
 
+# Environment variables (PENTING! Jangan push ini!)
+.env
+.env.local
+.env.production
+.env.development
+.env*.local
+
+# IDE
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -20,4 +32,21 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.env
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Testing
+coverage
+.nyc_output
+
+# Temporary files
+*.tmp
+*.temp
+.cache
+
+# Debug files
+debug-env.js
+test-api.html
+test-tmdb-api.js

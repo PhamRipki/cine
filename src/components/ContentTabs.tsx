@@ -20,6 +20,11 @@ const tabs: { key: TabType; label: string; icon: React.ReactNode }[] = [
 export default function ContentTabs({ movies, activeTab, onTabChange, onMovieClick, onWatchlistToggle, watchlist }: ContentTabsProps) {
   const filtered = movies.filter((m) => m.category === activeTab);
 
+  console.log('ContentTabs - Total movies:', movies.length);
+  console.log('ContentTabs - Active tab:', activeTab);
+  console.log('ContentTabs - Filtered movies:', filtered.length);
+  console.log('ContentTabs - Movies:', movies.map(m => ({ id: m.id, title: m.title, category: m.category })));
+
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Tab header */}
@@ -44,20 +49,27 @@ export default function ContentTabs({ movies, activeTab, onTabChange, onMovieCli
       </div>
 
       {/* Scrollable movie row */}
-      <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
-        {filtered.map((movie, i) => (
-          <div key={movie.id} className="snap-start">
-            <MovieCard
-              movie={movie}
-              rank={activeTab === 'boxoffice' ? i + 1 : undefined}
-              activeTab={activeTab}
-              onClick={onMovieClick}
-              onWatchlistToggle={onWatchlistToggle}
-              isInWatchlist={watchlist.has(movie.id)}
-            />
-          </div>
-        ))}
-      </div>
+      {filtered.length === 0 ? (
+        <div className="text-center py-12 text-slate-400">
+          <p>No movies found for this category</p>
+          <p className="text-sm mt-2">Total movies available: {movies.length}</p>
+        </div>
+      ) : (
+        <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
+          {filtered.map((movie, i) => (
+            <div key={movie.id} className="snap-start">
+              <MovieCard
+                movie={movie}
+                rank={activeTab === 'boxoffice' ? i + 1 : undefined}
+                activeTab={activeTab}
+                onClick={onMovieClick}
+                onWatchlistToggle={onWatchlistToggle}
+                isInWatchlist={watchlist.has(movie.id)}
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
