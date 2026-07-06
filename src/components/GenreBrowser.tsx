@@ -49,7 +49,7 @@ export default function GenreBrowser({ movies, onMovieClick, onWatchlistToggle, 
       {/* Header */}
       <div className="mb-8">
         <h2 className="text-3xl font-bold mb-2 flex items-center gap-3">
-          <Film className="text-amber-400" size={32} />
+          <Film className="text-indigo-400" size={32} />
           <span>Browse by Genre</span>
         </h2>
         <p className="text-slate-400">
@@ -68,7 +68,7 @@ export default function GenreBrowser({ movies, onMovieClick, onWatchlistToggle, 
             onClick={() => setSelectedGenre(null)}
             className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all duration-200 ${
               selectedGenre === null
-                ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30'
+                ? 'bg-indigo-500 text-black shadow-lg shadow-indigo-500/30'
                 : 'bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
             }`}
           >
@@ -86,7 +86,7 @@ export default function GenreBrowser({ movies, onMovieClick, onWatchlistToggle, 
                 onClick={() => setSelectedGenre(genre)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all duration-200 ${
                   selectedGenre === genre
-                    ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30'
+                    ? 'bg-indigo-500 text-black shadow-lg shadow-indigo-500/30'
                     : 'bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
                 }`}
               >
@@ -106,7 +106,7 @@ export default function GenreBrowser({ movies, onMovieClick, onWatchlistToggle, 
           <p className="text-slate-400 text-lg">No movies found in this genre</p>
           <button
             onClick={() => setSelectedGenre(null)}
-            className="mt-4 text-amber-400 hover:text-amber-300 underline"
+            className="mt-4 text-indigo-400 hover:text-indigo-300 underline"
           >
             View all movies
           </button>
@@ -153,7 +153,7 @@ export default function GenreBrowser({ movies, onMovieClick, onWatchlistToggle, 
                         e.stopPropagation();
                         onWatchlistToggle(movie);
                       }}
-                      className="w-full bg-amber-500 hover:bg-amber-600 text-black font-semibold py-2 px-3 rounded text-sm transition-colors"
+                      className="w-full bg-indigo-500 hover:bg-indigo-600 text-black font-semibold py-2 px-3 rounded text-sm transition-colors"
                     >
                       {watchlist.has(movie.id!) ? '✓ In Watchlist' : '+ Watchlist'}
                     </button>
@@ -163,14 +163,14 @@ export default function GenreBrowser({ movies, onMovieClick, onWatchlistToggle, 
                 {/* Rating Badge */}
                 {movie.rating && (
                   <div className="absolute top-2 right-2 bg-black/80 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1">
-                    <span className="text-amber-400 text-xs">⭐</span>
+                    <span className="text-indigo-400 text-xs">⭐</span>
                     <span className="text-white text-xs font-semibold">{movie.rating.toFixed(1)}</span>
                   </div>
                 )}
               </div>
 
               {/* Movie Info */}
-              <h3 className="font-semibold text-sm line-clamp-2 mb-1 group-hover:text-amber-400 transition-colors">
+              <h3 className="font-semibold text-sm line-clamp-2 mb-1 group-hover:text-indigo-400 transition-colors">
                 {movie.title}
               </h3>
               <div className="flex items-center justify-between text-xs text-slate-500">
@@ -189,23 +189,23 @@ export default function GenreBrowser({ movies, onMovieClick, onWatchlistToggle, 
         <div className="mt-8 p-6 bg-white/5 rounded-lg border border-white/10">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-amber-400">{filteredMovies.length}</div>
+              <div className="text-2xl font-bold text-indigo-400">{filteredMovies.length}</div>
               <div className="text-xs text-slate-500 mt-1">Movies</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-amber-400">
+              <div className="text-2xl font-bold text-indigo-400">
                 {(filteredMovies.reduce((sum, m) => sum + (m.rating || 0), 0) / filteredMovies.length).toFixed(1)}
               </div>
               <div className="text-xs text-slate-500 mt-1">Avg Rating</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-amber-400">
+              <div className="text-2xl font-bold text-indigo-400">
                 {Math.min(...filteredMovies.map(m => m.year || 2024))} - {Math.max(...filteredMovies.map(m => m.year || 2024))}
               </div>
               <div className="text-xs text-slate-500 mt-1">Year Range</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-amber-400">{selectedGenre}</div>
+              <div className="text-2xl font-bold text-indigo-400">{selectedGenre}</div>
               <div className="text-xs text-slate-500 mt-1">Genre</div>
             </div>
           </div>

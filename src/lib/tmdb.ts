@@ -12,8 +12,8 @@ const headers = {
 };
 
 export const tmdbApi = {
-  getTrending: async (mediaType: 'movie' | 'tv' = 'movie', timeWindow: 'day' | 'week' = 'week') => {
-    const url = `${TMDB_BASE_URL}/trending/${mediaType}/${timeWindow}`;
+  getTrending: async (mediaType: 'movie' | 'tv' = 'movie', timeWindow: 'day' | 'week' = 'week', page: number = 1) => {
+    const url = `${TMDB_BASE_URL}/trending/${mediaType}/${timeWindow}?page=${page}`;
     console.log('🔗 Fetching:', url);
     
     const response = await fetch(url, { headers });
@@ -30,8 +30,8 @@ export const tmdbApi = {
     return data;
   },
 
-  getPopular: async (mediaType: 'movie' | 'tv' = 'movie') => {
-    const url = `${TMDB_BASE_URL}/${mediaType}/popular`;
+  getPopular: async (mediaType: 'movie' | 'tv' = 'movie', page: number = 1) => {
+    const url = `${TMDB_BASE_URL}/${mediaType}/popular?page=${page}`;
     console.log('🔗 Fetching:', url);
     
     const response = await fetch(url, { headers });
@@ -48,8 +48,8 @@ export const tmdbApi = {
     return data;
   },
 
-  getTopRated: async (mediaType: 'movie' | 'tv' = 'movie') => {
-    const url = `${TMDB_BASE_URL}/${mediaType}/top_rated`;
+  getTopRated: async (mediaType: 'movie' | 'tv' = 'movie', page: number = 1) => {
+    const url = `${TMDB_BASE_URL}/${mediaType}/top_rated?page=${page}`;
     const response = await fetch(url, { headers });
     
     if (!response.ok) {
@@ -59,8 +59,26 @@ export const tmdbApi = {
     return response.json();
   },
 
-  getUpcoming: async () => {
-    const url = `${TMDB_BASE_URL}/movie/upcoming`;
+  getUpcoming: async (page: number = 1) => {
+    const url = `${TMDB_BASE_URL}/movie/upcoming?page=${page}`;
+    console.log('🔗 Fetching:', url);
+    
+    const response = await fetch(url, { headers });
+    console.log('📡 Response status:', response.status, response.statusText);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ API Error:', errorText);
+      throw new Error(`TMDB API Error: ${response.status} - ${errorText}`);
+    }
+    
+    const data = await response.json();
+    console.log('✅ Data received:', data.results?.length, 'movies');
+    return data;
+  },
+
+  getNowPlaying: async (page: number = 1) => {
+    const url = `${TMDB_BASE_URL}/movie/now_playing?page=${page}`;
     console.log('🔗 Fetching:', url);
     
     const response = await fetch(url, { headers });

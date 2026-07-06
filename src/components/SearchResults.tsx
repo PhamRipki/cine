@@ -36,7 +36,7 @@ export default function SearchResults({ movies, query, onMovieClick }: SearchRes
             <div
               key={movie.id}
               onClick={() => onMovieClick(movie)}
-              className="flex gap-4 bg-[#13161f] rounded-xl p-4 border border-white/5 hover:border-amber-500/25 cursor-pointer transition-all group"
+              className="flex gap-4 bg-slate-800 rounded-xl p-4 border border-white/5 hover:border-indigo-500/25 cursor-pointer transition-all group"
             >
               <img
                 src={movie.poster}
@@ -44,14 +44,14 @@ export default function SearchResults({ movies, query, onMovieClick }: SearchRes
                 className="w-16 h-24 object-cover rounded-lg flex-shrink-0"
               />
               <div className="flex-1 min-w-0">
-                <h3 className="text-white font-semibold leading-tight group-hover:text-amber-400 transition-colors line-clamp-2">
+                <h3 className="text-white font-semibold leading-tight group-hover:text-indigo-400 transition-colors line-clamp-2">
                   {movie.title}
                 </h3>
                 <p className="text-slate-500 text-xs mt-1">{movie.year} &middot; {movie.director}</p>
                 <div className="flex items-center gap-2 mt-2">
                   <div className="flex items-center gap-1">
-                    <Star size={12} className="text-amber-400" fill="currentColor" />
-                    <span className="text-amber-400 text-xs font-bold">{movie.rating}</span>
+                    <Star size={12} className="text-indigo-400" fill="currentColor" />
+                    <span className="text-indigo-400 text-xs font-bold">{movie.rating}</span>
                   </div>
                   <span className="text-slate-700">|</span>
                   <span className="flex items-center gap-1 text-slate-500 text-xs">

@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Search, Bookmark, ChevronDown, Film, Star, X, SlidersHorizontal, User, LogOut } from 'lucide-react';
-import { allGenres } from '../data/movies';
+import { Search, Bookmark, ChevronDown, Film, X, SlidersHorizontal, User, LogOut } from 'lucide-react';
 import { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface HeaderProps {
@@ -8,7 +7,6 @@ interface HeaderProps {
   onSearchChange: (q: string) => void;
   watchlistCount: number;
   onWatchlistClick: () => void;
-  onTop250Click: () => void;
   onAdvancedSearchClick: () => void;
   onAuthClick: () => void;
   user: SupabaseUser | null;
@@ -20,27 +18,24 @@ export default function Header({
   onSearchChange, 
   watchlistCount, 
   onWatchlistClick, 
-  onTop250Click,
   onAdvancedSearchClick,
   onAuthClick,
   user,
   onSignOut
 }: HeaderProps) {
-  const [genreOpen, setGenreOpen] = useState(false);
-  const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-[#0d0f14]/95 backdrop-blur-md border-b border-white/5">
+    <header className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-4 h-16">
           {/* Logo */}
           <a href="#" className="flex items-center gap-2 flex-shrink-0 group">
-            <div className="w-8 h-8 bg-amber-500 rounded flex items-center justify-center">
+            <div className="w-8 h-8 bg-indigo-500 rounded flex items-center justify-center">
               <Film size={18} className="text-black" />
             </div>
             <span className="text-white font-bold text-xl tracking-tight">
-              Cine<span className="text-amber-400">Data</span>
+              Cine<span className="text-indigo-400">View</span>
             </span>
           </a>
 
@@ -53,7 +48,7 @@ export default function Header({
                 placeholder="Search movies, directors, actors..."
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
-                className="w-full bg-[#1a1d26] text-white placeholder-slate-500 pl-10 pr-10 py-2.5 rounded-lg border border-white/10 focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/30 text-sm transition-all"
+                className="w-full bg-slate-700 text-white placeholder-slate-500 pl-10 pr-10 py-2.5 rounded-lg border border-white/10 focus:border-indigo-500/50 focus:outline-none focus:ring-1 focus:ring-indigo-500/30 text-sm transition-all"
               />
               {searchQuery && (
                 <button
@@ -67,7 +62,7 @@ export default function Header({
             {/* Advanced Search Button */}
             <button
               onClick={onAdvancedSearchClick}
-              className="absolute right-12 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-400 transition-colors"
+              className="absolute right-12 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-400 transition-colors"
               title="Advanced Search"
             >
               <SlidersHorizontal size={16} />
@@ -76,49 +71,10 @@ export default function Header({
 
           {/* Nav Items */}
           <nav className="hidden md:flex items-center gap-1">
-            {/* Browse Genres */}
-            <div className="relative">
-              <button
-                onClick={() => setGenreOpen(!genreOpen)}
-                className="flex items-center gap-1.5 text-slate-300 hover:text-white px-3 py-2 rounded-lg hover:bg-white/5 text-sm font-medium transition-all"
-              >
-                Browse Genres
-                <ChevronDown size={14} className={`transition-transform ${genreOpen ? 'rotate-180' : ''}`} />
-              </button>
-              {genreOpen && (
-                <div className="absolute top-full left-0 mt-1 w-56 bg-[#1a1d26] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
-                  <div className="p-2 grid grid-cols-2 gap-0.5">
-                    {allGenres.map((genre) => (
-                      <button
-                        key={genre}
-                        onClick={() => { setSelectedGenre(genre); setGenreOpen(false); }}
-                        className={`text-left px-3 py-2 text-sm rounded-lg transition-all ${
-                          selectedGenre === genre
-                            ? 'bg-amber-500/20 text-amber-400'
-                            : 'text-slate-300 hover:bg-white/5 hover:text-white'
-                        }`}
-                      >
-                        {genre}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Top 250 */}
-            <button
-              onClick={onTop250Click}
-              className="flex items-center gap-1.5 text-slate-300 hover:text-amber-400 px-3 py-2 rounded-lg hover:bg-white/5 text-sm font-medium transition-all"
-            >
-              <Star size={14} className="text-amber-400" />
-              Top 250
-            </button>
-
             {/* Watchlist */}
             <button
               onClick={onWatchlistClick}
-              className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-black px-3 py-2 rounded-lg text-sm font-semibold transition-all ml-1"
+              className="flex items-center gap-1.5 bg-indigo-500 hover:bg-indigo-400 text-black px-3 py-2 rounded-lg text-sm font-semibold transition-all"
             >
               <Bookmark size={14} />
               Watchlist
@@ -143,7 +99,7 @@ export default function Header({
                   <ChevronDown size={14} className={`transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
                 {userMenuOpen && (
-                  <div className="absolute top-full right-0 mt-1 w-48 bg-[#1a1d26] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
+                  <div className="absolute top-full right-0 mt-1 w-48 bg-slate-700 border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
                     <div className="p-2">
                       <div className="px-3 py-2 text-xs text-slate-500 border-b border-white/5">
                         {user.email}
@@ -176,11 +132,11 @@ export default function Header({
           {/* Mobile watchlist */}
           <button
             onClick={onWatchlistClick}
-            className="md:hidden relative text-slate-300 hover:text-amber-400 transition-colors"
+            className="md:hidden relative text-slate-300 hover:text-indigo-400 transition-colors"
           >
             <Bookmark size={20} />
             {watchlistCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-amber-500 text-black text-xs w-4 h-4 rounded-full flex items-center justify-center font-bold">
+              <span className="absolute -top-1 -right-1 bg-indigo-500 text-black text-xs w-4 h-4 rounded-full flex items-center justify-center font-bold">
                 {watchlistCount}
               </span>
             )}
@@ -189,13 +145,10 @@ export default function Header({
       </div>
 
       {/* Overlay to close dropdowns */}
-      {(genreOpen || userMenuOpen) && (
+      {userMenuOpen && (
         <div 
           className="fixed inset-0 z-40" 
-          onClick={() => {
-            setGenreOpen(false);
-            setUserMenuOpen(false);
-          }} 
+          onClick={() => setUserMenuOpen(false)} 
         />
       )}
     </header>

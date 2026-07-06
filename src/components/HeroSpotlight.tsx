@@ -20,12 +20,12 @@ export default function HeroSpotlight({ movie, onMovieClick, onWatchlistAdd, isI
       />
 
       {/* Gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0d0f14] via-[#0d0f14]/70 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0d0f14] via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[slate-900] via-[slate-900]/70 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[slate-900] via-transparent to-transparent" />
 
       {/* Badge */}
       <div className="absolute top-8 left-1/2 -translate-x-1/2 hidden md:block">
-        <div className="flex items-center gap-2 bg-amber-500/15 border border-amber-500/30 text-amber-400 text-xs font-semibold px-4 py-1.5 rounded-full tracking-widest uppercase">
+        <div className="flex items-center gap-2 bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 text-xs font-semibold px-4 py-1.5 rounded-full tracking-widest uppercase">
           <Star size={11} fill="currentColor" />
           Movie of the Day
         </div>
@@ -36,7 +36,7 @@ export default function HeroSpotlight({ movie, onMovieClick, onWatchlistAdd, isI
         <div className="max-w-2xl">
           {/* Meta badges */}
           <div className="flex items-center gap-2 mb-4 flex-wrap">
-            <span className="bg-amber-500 text-black text-xs font-bold px-2 py-0.5 rounded">
+            <span className="bg-indigo-500 text-black text-xs font-bold px-2 py-0.5 rounded">
               {movie.pgRating}
             </span>
             <span className="text-slate-400 text-sm">{movie.year}</span>
@@ -68,8 +68,8 @@ export default function HeroSpotlight({ movie, onMovieClick, onWatchlistAdd, isI
           {/* Rating Badges */}
           <div className="flex items-center gap-3 mb-8">
             {/* CineData Score */}
-            <div className="flex items-center gap-2 bg-[#1a1d26]/90 border border-amber-500/30 rounded-xl px-4 py-3">
-              <Star size={18} className="text-amber-400" fill="currentColor" />
+            <div className="flex items-center gap-2 bg-slate-700/90 border border-indigo-500/30 rounded-xl px-4 py-3">
+              <Star size={18} className="text-indigo-400" fill="currentColor" />
               <div>
                 <div className="text-white font-bold text-lg leading-none">{movie.rating}<span className="text-slate-500 text-sm font-normal">/10</span></div>
                 <div className="text-slate-500 text-xs mt-0.5">CineData Score</div>
@@ -102,7 +102,7 @@ export default function HeroSpotlight({ movie, onMovieClick, onWatchlistAdd, isI
           <div className="flex items-center gap-3">
             <button
               onClick={() => onMovieClick(movie)}
-              className="flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-black font-semibold px-6 py-3 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+              className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-black font-semibold px-6 py-3 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
             >
               <Play size={16} fill="currentColor" />
               View Details
@@ -111,7 +111,7 @@ export default function HeroSpotlight({ movie, onMovieClick, onWatchlistAdd, isI
               onClick={() => onWatchlistAdd(movie)}
               className={`flex items-center gap-2 px-6 py-3 rounded-xl border font-semibold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] ${
                 isInWatchlist
-                  ? 'bg-amber-500/20 border-amber-500/50 text-amber-400'
+                  ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-400'
                   : 'bg-white/5 border-white/15 text-white hover:bg-white/10'
               }`}
             >

@@ -15,7 +15,7 @@ export default function MovieDetail({ movie, onClose, onWatchlistToggle, isInWat
       <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" />
 
       <div
-        className="relative z-10 w-full max-w-5xl mx-4 my-8 bg-[#13161f] rounded-2xl border border-white/10 overflow-hidden shadow-2xl"
+        className="relative z-10 w-full max-w-5xl mx-4 my-8 bg-slate-800 rounded-2xl border border-white/10 overflow-hidden shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Hero Banner */}
@@ -26,7 +26,7 @@ export default function MovieDetail({ movie, onClose, onWatchlistToggle, isInWat
             className="w-full h-full object-cover"
             style={{ filter: 'brightness(0.4)' }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#13161f] via-[#13161f]/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[slate-800] via-[slate-800]/40 to-transparent" />
 
           {/* Close */}
           <button
@@ -38,7 +38,7 @@ export default function MovieDetail({ movie, onClose, onWatchlistToggle, isInWat
 
           {/* Badges */}
           <div className="absolute bottom-4 left-6 flex items-center gap-2">
-            <span className="bg-amber-500 text-black text-xs font-bold px-2 py-0.5 rounded">{movie.pgRating}</span>
+            <span className="bg-indigo-500 text-black text-xs font-bold px-2 py-0.5 rounded">{movie.pgRating}</span>
             {movie.genre.map((g) => (
               <span key={g} className="bg-white/10 backdrop-blur-sm text-white text-xs px-2 py-0.5 rounded border border-white/10">
                 {g}
@@ -59,7 +59,7 @@ export default function MovieDetail({ movie, onClose, onWatchlistToggle, isInWat
               onClick={() => onWatchlistToggle(movie)}
               className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2.5 rounded-xl border text-sm font-semibold transition-all ${
                 isInWatchlist
-                  ? 'bg-amber-500/20 border-amber-500/50 text-amber-400'
+                  ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-400'
                   : 'bg-white/5 border-white/15 text-white hover:bg-white/10'
               }`}
             >
@@ -70,8 +70,8 @@ export default function MovieDetail({ movie, onClose, onWatchlistToggle, isInWat
 
           {/* Ratings */}
           <div className="flex items-center gap-3 mb-6">
-            <div className="flex items-center gap-2 bg-[#0d0f14] border border-amber-500/25 rounded-xl px-4 py-3">
-              <Star size={18} className="text-amber-400" fill="currentColor" />
+            <div className="flex items-center gap-2 bg-slate-900 border border-indigo-500/25 rounded-xl px-4 py-3">
+              <Star size={18} className="text-indigo-400" fill="currentColor" />
               <div>
                 <div className="text-white font-bold text-xl leading-none">
                   {movie.rating}<span className="text-slate-500 text-sm font-normal">/10</span>
@@ -96,7 +96,7 @@ export default function MovieDetail({ movie, onClose, onWatchlistToggle, isInWat
                 <div className="text-slate-500 text-xs mt-0.5">Metascore</div>
               </div>
             </div>
-            <div className="flex items-center gap-2 bg-[#0d0f14] border border-white/10 rounded-xl px-4 py-3">
+            <div className="flex items-center gap-2 bg-slate-900 border border-white/10 rounded-xl px-4 py-3">
               <Clock size={18} className="text-slate-400" />
               <div>
                 <div className="text-white font-bold text-xl leading-none">
@@ -115,7 +115,7 @@ export default function MovieDetail({ movie, onClose, onWatchlistToggle, isInWat
               {/* Synopsis */}
               <div>
                 <h3 className="text-white font-semibold text-sm uppercase tracking-widest mb-3 flex items-center gap-2">
-                  <span className="w-4 h-0.5 bg-amber-500 rounded" />
+                  <span className="w-4 h-0.5 bg-indigo-500 rounded" />
                   Synopsis
                 </h3>
                 <p className="text-slate-300 text-sm leading-relaxed">{movie.synopsis}</p>
@@ -125,10 +125,10 @@ export default function MovieDetail({ movie, onClose, onWatchlistToggle, isInWat
             {/* Sidebar: Technical Specs */}
             <div className="lg:col-span-1">
               <h3 className="text-white font-semibold text-sm uppercase tracking-widest mb-4 flex items-center gap-2">
-                <span className="w-4 h-0.5 bg-amber-500 rounded" />
+                <span className="w-4 h-0.5 bg-indigo-500 rounded" />
                 Technical Specs
               </h3>
-              <div className="bg-[#0d0f14] rounded-xl border border-white/8 overflow-hidden">
+              <div className="bg-slate-900 rounded-xl border border-white/8 overflow-hidden">
                 {[
                   { icon: <Calendar size={14} />, label: 'Release Date', value: movie.releaseDate },
                   { icon: <Globe size={14} />, label: 'Country', value: movie.country },
@@ -142,7 +142,7 @@ export default function MovieDetail({ movie, onClose, onWatchlistToggle, isInWat
                       index < arr.length - 1 ? 'border-b border-white/5' : ''
                     }`}
                   >
-                    <span className="text-amber-400/70 flex-shrink-0">{item.icon}</span>
+                    <span className="text-indigo-400/70 flex-shrink-0">{item.icon}</span>
                     <div className="min-w-0">
                       <div className="text-slate-500 text-xs">{item.label}</div>
                       <div className="text-slate-200 text-sm font-medium mt-0.5 truncate">{item.value}</div>

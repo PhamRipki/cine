@@ -13,16 +13,16 @@ export default function WatchlistPanel({ movies, onClose, onMovieClick, onRemove
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
       <div
-        className="relative z-10 w-full max-w-sm bg-[#13161f] border-l border-white/10 h-full overflow-y-auto flex flex-col"
+        className="relative z-10 w-full max-w-sm bg-slate-800 border-l border-white/10 h-full overflow-y-auto flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-white/8">
           <div className="flex items-center gap-2">
-            <Bookmark size={16} className="text-amber-400" fill="currentColor" />
+            <Bookmark size={16} className="text-indigo-400" fill="currentColor" />
             <h2 className="text-white font-bold text-base">My Watchlist</h2>
             {movies.length > 0 && (
-              <span className="bg-amber-500 text-black text-xs font-bold px-2 py-0.5 rounded-full">
+              <span className="bg-indigo-500 text-black text-xs font-bold px-2 py-0.5 rounded-full">
                 {movies.length}
               </span>
             )}
@@ -47,7 +47,7 @@ export default function WatchlistPanel({ movies, onClose, onMovieClick, onRemove
               {movies.map((movie) => (
                 <div
                   key={movie.id}
-                  className="flex items-center gap-3 bg-[#0d0f14] rounded-xl p-3 border border-white/5 hover:border-amber-500/20 transition-all cursor-pointer group"
+                  className="flex items-center gap-3 bg-slate-900 rounded-xl p-3 border border-white/5 hover:border-indigo-500/20 transition-all cursor-pointer group"
                   onClick={() => onMovieClick(movie)}
                 >
                   <img
@@ -56,13 +56,13 @@ export default function WatchlistPanel({ movies, onClose, onMovieClick, onRemove
                     className="w-12 h-16 object-cover rounded-lg flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-white text-sm font-semibold line-clamp-1 group-hover:text-amber-400 transition-colors">
+                    <h3 className="text-white text-sm font-semibold line-clamp-1 group-hover:text-indigo-400 transition-colors">
                       {movie.title}
                     </h3>
                     <p className="text-slate-500 text-xs mt-0.5">{movie.year}</p>
                     <div className="flex items-center gap-1 mt-1.5">
-                      <Star size={11} className="text-amber-400" fill="currentColor" />
-                      <span className="text-amber-400 text-xs font-bold">{movie.rating}</span>
+                      <Star size={11} className="text-indigo-400" fill="currentColor" />
+                      <span className="text-indigo-400 text-xs font-bold">{movie.rating}</span>
                       <span className="text-slate-600 text-xs ml-1">{movie.genre[0]}</span>
                     </div>
                   </div>

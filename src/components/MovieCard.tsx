@@ -13,7 +13,7 @@ interface MovieCardProps {
 export default function MovieCard({ movie, rank, onClick, onWatchlistToggle, isInWatchlist, activeTab }: MovieCardProps) {
   return (
     <div
-      className="group relative bg-[#13161f] rounded-xl overflow-hidden border border-white/5 hover:border-amber-500/25 transition-all duration-300 cursor-pointer flex-shrink-0 w-52"
+      className="group relative bg-slate-800 rounded-xl overflow-hidden border border-white/5 hover:border-indigo-500/25 transition-all duration-300 cursor-pointer flex-shrink-0 w-52"
       onClick={() => onClick(movie)}
     >
       {/* Poster */}
@@ -23,11 +23,11 @@ export default function MovieCard({ movie, rank, onClick, onWatchlistToggle, isI
           alt={movie.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#13161f] via-transparent to-transparent opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[slate-800] via-transparent to-transparent opacity-60" />
 
         {/* Rank badge */}
         {rank && (
-          <div className="absolute top-2 left-2 bg-black/70 backdrop-blur-sm text-amber-400 text-xs font-bold px-2 py-1 rounded-lg border border-amber-500/30">
+          <div className="absolute top-2 left-2 bg-black/70 backdrop-blur-sm text-indigo-400 text-xs font-bold px-2 py-1 rounded-lg border border-indigo-500/30">
             #{rank}
           </div>
         )}
@@ -51,7 +51,7 @@ export default function MovieCard({ movie, rank, onClick, onWatchlistToggle, isI
           onClick={(e) => { e.stopPropagation(); onWatchlistToggle(movie); }}
           className={`absolute bottom-2 right-2 p-1.5 rounded-lg backdrop-blur-sm transition-all ${
             isInWatchlist
-              ? 'bg-amber-500/90 text-black'
+              ? 'bg-indigo-500/90 text-black'
               : 'bg-black/60 text-white opacity-0 group-hover:opacity-100'
           }`}
         >
@@ -66,7 +66,7 @@ export default function MovieCard({ movie, rank, onClick, onWatchlistToggle, isI
 
       {/* Info */}
       <div className="p-3">
-        <h3 className="text-white text-sm font-semibold leading-tight mb-1 line-clamp-1 group-hover:text-amber-400 transition-colors">
+        <h3 className="text-white text-sm font-semibold leading-tight mb-1 line-clamp-1 group-hover:text-indigo-400 transition-colors">
           {movie.title}
         </h3>
         <div className="text-slate-500 text-xs mb-2">{movie.year}</div>
@@ -74,8 +74,8 @@ export default function MovieCard({ movie, rank, onClick, onWatchlistToggle, isI
         {/* Ratings row */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
-            <Star size={12} className="text-amber-400" fill="currentColor" />
-            <span className="text-amber-400 text-xs font-bold">{movie.rating}</span>
+            <Star size={12} className="text-indigo-400" fill="currentColor" />
+            <span className="text-indigo-400 text-xs font-bold">{movie.rating}</span>
           </div>
           <div className={`flex items-center gap-1 text-xs font-semibold px-1.5 py-0.5 rounded ${
             movie.criticScore >= 80 ? 'bg-emerald-500/15 text-emerald-400' :

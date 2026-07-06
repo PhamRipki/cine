@@ -25,7 +25,7 @@ export default function MovieGrid({ movies, title, onMovieClick, onWatchlistTogg
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-        <span className="text-amber-400">{title}</span>
+        <span className="text-indigo-400">{title}</span>
         <span className="text-sm text-slate-500 font-normal">({movies.length} movies)</span>
       </h2>
       
@@ -48,7 +48,7 @@ export default function MovieGrid({ movies, title, onMovieClick, onWatchlistTogg
                       e.stopPropagation();
                       onWatchlistToggle(movie);
                     }}
-                    className="w-full bg-amber-500 hover:bg-amber-600 text-black font-semibold py-2 px-3 rounded text-sm transition-colors"
+                    className="w-full bg-indigo-500 hover:bg-indigo-600 text-black font-semibold py-2 px-3 rounded text-sm transition-colors"
                   >
                     {watchlist.has(movie.id!) ? '✓ In Watchlist' : '+ Watchlist'}
                   </button>
@@ -56,12 +56,12 @@ export default function MovieGrid({ movies, title, onMovieClick, onWatchlistTogg
               </div>
               {movie.rating && (
                 <div className="absolute top-2 right-2 bg-black/80 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1">
-                  <span className="text-amber-400 text-xs">⭐</span>
+                  <span className="text-indigo-400 text-xs">⭐</span>
                   <span className="text-white text-xs font-semibold">{movie.rating.toFixed(1)}</span>
                 </div>
               )}
             </div>
-            <h3 className="font-semibold text-sm line-clamp-2 mb-1 group-hover:text-amber-400 transition-colors">
+            <h3 className="font-semibold text-sm line-clamp-2 mb-1 group-hover:text-indigo-400 transition-colors">
               {movie.title}
             </h3>
             <p className="text-xs text-slate-500">{movie.year}</p>

@@ -17,27 +17,48 @@ export const useMovies = () => {
         console.log('API Key:', import.meta.env.VITE_TMDB_API_KEY ? 'Present' : 'Missing');
         console.log('Base URL:', import.meta.env.VITE_TMDB_BASE_URL);
         
-        console.log('📞 Calling getTrending...');
-        const trendingRes = await tmdbApi.getTrending('movie', 'week');
-        console.log('✅ Trending response:', trendingRes);
+        // Fetch multiple pages for each category to get more movies
+        console.log('📞 Calling getTrending (2 pages)...');
+        const trendingPage1 = await tmdbApi.getTrending('movie', 'week', 1);
+        const trendingPage2 = await tmdbApi.getTrending('movie', 'week', 2);
         
-        console.log('📞 Calling getPopular...');
-        const popularRes = await tmdbApi.getPopular('movie');
-        console.log('✅ Popular response:', popularRes);
+        console.log('📞 Calling getPopular (2 pages)...');
+        const popularPage1 = await tmdbApi.getPopular('movie', 1);
+        const popularPage2 = await tmdbApi.getPopular('movie', 2);
         
-        console.log('📞 Calling getUpcoming...');
-        const upcomingRes = await tmdbApi.getUpcoming();
-        console.log('✅ Upcoming response:', upcomingRes);
+        console.log('📞 Calling getUpcoming (2 pages)...');
+        const upcomingPage1 = await tmdbApi.getUpcoming(1);
+        const upcomingPage2 = await tmdbApi.getUpcoming(2);
+        
+        console.log('📞 Calling getNowPlaying (2 pages)...');
+        const nowPlayingPage1 = await tmdbApi.getNowPlaying(1);
+        const nowPlayingPage2 = await tmdbApi.getNowPlaying(2);
 
-        const trending = trendingRes.results?.slice(0, 8).map((m: TMDBMovie) => mapTMDBToMovie(m, 'trending')) || [];
-        const boxoffice = popularRes.results?.slice(0, 8).map((m: TMDBMovie) => mapTMDBToMovie(m, 'boxoffice')) || [];
-        const anticipated = upcomingRes.results?.slice(0, 8).map((m: TMDBMovie) => mapTMDBToMovie(m, 'anticipated')) || [];
+        console.log('📞 Calling getTopRated...');
+        const topRatedRes = await tmdbApi.getTopRated('movie', 1);
+
+        // Combine results from multiple pages
+        const trendingResults = [...(trendingPage1.results || []), ...(trendingPage2.results || [])];
+        const popularResults = [...(popularPage1.results || []), ...(popularPage2.results || [])];
+        const upcomingResults = [...(upcomingPage1.results || []), ...(upcomingPage2.results || [])];
+        const nowPlayingResults = [...(nowPlayingPage1.results || []), ...(nowPlayingPage2.results || [])];
+        const topRatedResults = topRatedRes.results || [];
+
+        // Map and limit to 20 movies per category
+        const trending = trendingResults.slice(0, 20).map((m: TMDBMovie) => mapTMDBToMovie(m, 'trending'));
+        const boxoffice = popularResults.slice(0, 20).map((m: TMDBMovie) => mapTMDBToMovie(m, 'boxoffice'));
+        const anticipated = upcomingResults.slice(0, 20).map((m: TMDBMovie) => mapTMDBToMovie(m, 'anticipated'));
+        const nowPlaying = nowPlayingResults.slice(0, 20).map((m: TMDBMovie) => mapTMDBToMovie(m, 'nowplaying'));
+        const topRated = topRatedResults.slice(0, 20).map((m: TMDBMovie) => mapTMDBToMovie(m, 'toprated'));
 
         console.log('🎯 Mapped trending:', trending.length);
         console.log('🎯 Mapped boxoffice:', boxoffice.length);
         console.log('🎯 Mapped anticipated:', anticipated.length);
+        console.log('🎯 Mapped now playing:', nowPlaying.length);
+        console.log('🎯 Mapped top rated:', topRated.length);
 
-        const allMovies = [...trending, ...boxoffice, ...anticipated];
+        // Combine all movies (total: up to 100 movies)
+        const allMovies = [...trending, ...boxoffice, ...anticipated, ...nowPlaying, ...topRated];
         console.log('📊 Total movies fetched:', allMovies.length);
         setMovies(allMovies);
         

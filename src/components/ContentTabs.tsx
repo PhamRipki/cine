@@ -35,7 +35,7 @@ export default function ContentTabs({ movies, activeTab, onTabChange, onMovieCli
             onClick={() => onTabChange(tab.key)}
             className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 transition-all duration-200 -mb-px ${
               activeTab === tab.key
-                ? 'border-amber-500 text-amber-400'
+                ? 'border-indigo-500 text-indigo-400'
                 : 'border-transparent text-slate-500 hover:text-slate-300 hover:border-white/20'
             }`}
           >

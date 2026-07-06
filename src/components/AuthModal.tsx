@@ -106,11 +106,11 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
 
       {/* Modal */}
       <div
-        className="relative z-10 w-full max-w-md bg-[#13161f] rounded-2xl border border-white/10 shadow-2xl overflow-hidden"
+        className="relative z-10 w-full max-w-md bg-slate-800 rounded-2xl border border-white/10 shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="relative bg-gradient-to-br from-amber-500/20 to-transparent p-6 border-b border-white/10">
+        <div className="relative bg-gradient-to-br from-indigo-500/20 to-transparent p-6 border-b border-white/10">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
@@ -158,7 +158,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="John Doe"
-                    className="w-full bg-[#0d0f14] text-white placeholder-slate-500 pl-10 pr-4 py-3 rounded-lg border border-white/10 focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/30 transition-all"
+                    className="w-full bg-slate-900 text-white placeholder-slate-500 pl-10 pr-4 py-3 rounded-lg border border-white/10 focus:border-indigo-500/50 focus:outline-none focus:ring-1 focus:ring-indigo-500/30 transition-all"
                     required
                   />
                 </div>
@@ -177,7 +177,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full bg-[#0d0f14] text-white placeholder-slate-500 pl-10 pr-4 py-3 rounded-lg border border-white/10 focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/30 transition-all"
+                  className="w-full bg-slate-900 text-white placeholder-slate-500 pl-10 pr-4 py-3 rounded-lg border border-white/10 focus:border-indigo-500/50 focus:outline-none focus:ring-1 focus:ring-indigo-500/30 transition-all"
                   required
                 />
               </div>
@@ -196,7 +196,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full bg-[#0d0f14] text-white placeholder-slate-500 pl-10 pr-12 py-3 rounded-lg border border-white/10 focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/30 transition-all"
+                    className="w-full bg-slate-900 text-white placeholder-slate-500 pl-10 pr-12 py-3 rounded-lg border border-white/10 focus:border-indigo-500/50 focus:outline-none focus:ring-1 focus:ring-indigo-500/30 transition-all"
                     required
                     minLength={6}
                   />
@@ -222,7 +222,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
                 <button
                   type="button"
                   onClick={() => switchMode('reset')}
-                  className="text-sm text-amber-400 hover:text-amber-300 transition-colors"
+                  className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
                 >
                   Forgot password?
                 </button>
@@ -233,7 +233,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-amber-500 hover:bg-amber-600 disabled:bg-amber-500/50 text-black font-semibold py-3 rounded-lg transition-all flex items-center justify-center gap-2"
+              className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:bg-indigo-500/50 text-black font-semibold py-3 rounded-lg transition-all flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>
@@ -258,7 +258,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
                   <div className="w-full border-t border-white/10"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-[#13161f] text-slate-500">Or continue with</span>
+                  <span className="px-2 bg-slate-800 text-slate-500">Or continue with</span>
                 </div>
               </div>
 
@@ -298,7 +298,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
                 Don't have an account?{' '}
                 <button
                   onClick={() => switchMode('signup')}
-                  className="text-amber-400 hover:text-amber-300 font-semibold transition-colors"
+                  className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors"
                 >
                   Sign up
                 </button>
@@ -309,7 +309,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
                 Already have an account?{' '}
                 <button
                   onClick={() => switchMode('signin')}
-                  className="text-amber-400 hover:text-amber-300 font-semibold transition-colors"
+                  className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors"
                 >
                   Sign in
                 </button>
@@ -320,7 +320,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
                 Remember your password?{' '}
                 <button
                   onClick={() => switchMode('signin')}
-                  className="text-amber-400 hover:text-amber-300 font-semibold transition-colors"
+                  className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors"
                 >
                   Sign in
                 </button>

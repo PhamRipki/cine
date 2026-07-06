@@ -129,11 +129,11 @@ export default function AdvancedSearch({ isOpen, onClose, movies, onResults }: A
 
       {/* Modal */}
       <div
-        className="relative z-10 w-full max-w-4xl my-8 bg-[#13161f] rounded-2xl border border-white/10 shadow-2xl"
+        className="relative z-10 w-full max-w-4xl my-8 bg-slate-800 rounded-2xl border border-white/10 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="relative bg-gradient-to-br from-amber-500/20 to-transparent p-6 border-b border-white/10">
+        <div className="relative bg-gradient-to-br from-indigo-500/20 to-transparent p-6 border-b border-white/10">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
@@ -141,8 +141,8 @@ export default function AdvancedSearch({ isOpen, onClose, movies, onResults }: A
             <X size={20} />
           </button>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
-              <SlidersHorizontal size={20} className="text-amber-400" />
+            <div className="w-10 h-10 bg-indigo-500/20 rounded-lg flex items-center justify-center">
+              <SlidersHorizontal size={20} className="text-indigo-400" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-white">Advanced Search</h2>
@@ -167,7 +167,7 @@ export default function AdvancedSearch({ isOpen, onClose, movies, onResults }: A
                 value={filters.query}
                 onChange={(e) => setFilters({ ...filters, query: e.target.value })}
                 placeholder="e.g., Inception, Christopher Nolan"
-                className="w-full bg-[#0d0f14] text-white placeholder-slate-500 pl-10 pr-4 py-3 rounded-lg border border-white/10 focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/30 transition-all"
+                className="w-full bg-slate-900 text-white placeholder-slate-500 pl-10 pr-4 py-3 rounded-lg border border-white/10 focus:border-indigo-500/50 focus:outline-none focus:ring-1 focus:ring-indigo-500/30 transition-all"
               />
             </div>
           </div>
@@ -185,7 +185,7 @@ export default function AdvancedSearch({ isOpen, onClose, movies, onResults }: A
                   onClick={() => toggleGenre(genre)}
                   className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
                     filters.genres.includes(genre)
-                      ? 'bg-amber-500 text-black'
+                      ? 'bg-indigo-500 text-black'
                       : 'bg-white/5 text-slate-300 hover:bg-white/10'
                   }`}
                 >
@@ -208,7 +208,7 @@ export default function AdvancedSearch({ isOpen, onClose, movies, onResults }: A
                 onChange={(e) => setFilters({ ...filters, yearMin: parseInt(e.target.value) || 1900 })}
                 min={1900}
                 max={currentYear + 2}
-                className="w-full bg-[#0d0f14] text-white pl-4 pr-4 py-3 rounded-lg border border-white/10 focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/30 transition-all"
+                className="w-full bg-slate-900 text-white pl-4 pr-4 py-3 rounded-lg border border-white/10 focus:border-indigo-500/50 focus:outline-none focus:ring-1 focus:ring-indigo-500/30 transition-all"
               />
             </div>
             <div>
@@ -222,7 +222,7 @@ export default function AdvancedSearch({ isOpen, onClose, movies, onResults }: A
                 onChange={(e) => setFilters({ ...filters, yearMax: parseInt(e.target.value) || currentYear + 2 })}
                 min={1900}
                 max={currentYear + 2}
-                className="w-full bg-[#0d0f14] text-white pl-4 pr-4 py-3 rounded-lg border border-white/10 focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/30 transition-all"
+                className="w-full bg-slate-900 text-white pl-4 pr-4 py-3 rounded-lg border border-white/10 focus:border-indigo-500/50 focus:outline-none focus:ring-1 focus:ring-indigo-500/30 transition-all"
               />
             </div>
           </div>
@@ -241,7 +241,7 @@ export default function AdvancedSearch({ isOpen, onClose, movies, onResults }: A
                 min={0}
                 max={10}
                 step={0.1}
-                className="w-full h-2 bg-[#0d0f14] rounded-lg appearance-none cursor-pointer accent-amber-500"
+                className="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-indigo-500"
               />
             </div>
             <div>
@@ -256,7 +256,7 @@ export default function AdvancedSearch({ isOpen, onClose, movies, onResults }: A
                 min={0}
                 max={10}
                 step={0.1}
-                className="w-full h-2 bg-[#0d0f14] rounded-lg appearance-none cursor-pointer accent-amber-500"
+                className="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-indigo-500"
               />
             </div>
           </div>
@@ -271,7 +271,7 @@ export default function AdvancedSearch({ isOpen, onClose, movies, onResults }: A
               <select
                 value={filters.sortBy}
                 onChange={(e) => setFilters({ ...filters, sortBy: e.target.value as any })}
-                className="w-full bg-[#0d0f14] text-white pl-4 pr-4 py-3 rounded-lg border border-white/10 focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/30 transition-all"
+                className="w-full bg-slate-900 text-white pl-4 pr-4 py-3 rounded-lg border border-white/10 focus:border-indigo-500/50 focus:outline-none focus:ring-1 focus:ring-indigo-500/30 transition-all"
               >
                 <option value="popularity">Popularity</option>
                 <option value="title">Title</option>
@@ -286,7 +286,7 @@ export default function AdvancedSearch({ isOpen, onClose, movies, onResults }: A
               <select
                 value={filters.sortOrder}
                 onChange={(e) => setFilters({ ...filters, sortOrder: e.target.value as any })}
-                className="w-full bg-[#0d0f14] text-white pl-4 pr-4 py-3 rounded-lg border border-white/10 focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/30 transition-all"
+                className="w-full bg-slate-900 text-white pl-4 pr-4 py-3 rounded-lg border border-white/10 focus:border-indigo-500/50 focus:outline-none focus:ring-1 focus:ring-indigo-500/30 transition-all"
               >
                 <option value="desc">Descending</option>
                 <option value="asc">Ascending</option>
@@ -296,8 +296,8 @@ export default function AdvancedSearch({ isOpen, onClose, movies, onResults }: A
 
           {/* Results Count */}
           {resultsCount > 0 && (
-            <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 text-center">
-              <p className="text-amber-400 font-semibold">
+            <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-lg p-4 text-center">
+              <p className="text-indigo-400 font-semibold">
                 Found {resultsCount} movie{resultsCount !== 1 ? 's' : ''}
               </p>
             </div>
@@ -314,7 +314,7 @@ export default function AdvancedSearch({ isOpen, onClose, movies, onResults }: A
           </button>
           <button
             onClick={handleSearch}
-            className="flex-1 bg-amber-500 hover:bg-amber-600 text-black font-semibold py-3 rounded-lg transition-all flex items-center justify-center gap-2"
+            className="flex-1 bg-indigo-500 hover:bg-indigo-600 text-black font-semibold py-3 rounded-lg transition-all flex items-center justify-center gap-2"
           >
             <Search size={18} />
             Search Movies

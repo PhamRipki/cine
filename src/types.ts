@@ -26,7 +26,7 @@ export interface Movie {
   language: string;
   budget: string;
   boxOffice: string;
-  category: 'trending' | 'anticipated' | 'boxoffice';
+  category: 'trending' | 'anticipated' | 'boxoffice' | 'nowplaying' | 'toprated';
   // TMDB fields
   original_title?: string;
   overview?: string;
@@ -39,7 +39,7 @@ export interface Movie {
   genre_ids?: number[];
 }
 
-export type TabType = 'trending' | 'anticipated' | 'boxoffice';
+export type TabType = 'trending' | 'anticipated' | 'boxoffice' | 'nowplaying' | 'toprated';
 
 export interface FilterState {
   genres: string[];
