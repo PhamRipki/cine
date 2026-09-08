@@ -1,4 +1,5 @@
 import { Movie } from '../types';
+import SkeletonCard from './SkeletonCard';
 
 interface MovieGridProps {
   movies: Partial<Movie>[];
@@ -6,27 +7,32 @@ interface MovieGridProps {
   onMovieClick: (movie: Partial<Movie>) => void;
   onWatchlistToggle: (movie: Partial<Movie>) => void;
   watchlist: Set<number>;
+  isLoading?: boolean;
 }
 
-export default function MovieGrid({ movies, title, onMovieClick, onWatchlistToggle, watchlist }: MovieGridProps) {
-  console.log(`MovieGrid "${title}" - Movies:`, movies.length);
-  
-  if (movies.length === 0) {
+export default function MovieGrid({ movies, title, onMovieClick, onWatchlistToggle, watchlist, isLoading }: MovieGridProps) {
+  if (isLoading) {
     return (
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h2 className="text-2xl font-bold mb-6">{title}</h2>
-        <div className="text-center py-12 bg-white/5 rounded-lg">
-          <p className="text-slate-400">No movies available</p>
+        <h2 className="text-2xl font-bold mb-6 text-indigo-400">{title}</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+          {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
         </div>
       </section>
     );
+  }
+
+  if (movies.length === 0) {
+    return null;
   }
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
         <span className="text-indigo-400">{title}</span>
-        <span className="text-sm text-slate-500 font-normal">({movies.length} movies)</span>
+        {!title.includes('movies') && (
+          <span className="text-sm text-slate-500 font-normal">({movies.length} movies)</span>
+        )}
       </h2>
       
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
@@ -38,7 +44,7 @@ export default function MovieGrid({ movies, title, onMovieClick, onWatchlistTogg
                 alt={movie.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x450/1e293b/94a3b8?text=No+Image';
+                  (e.target as HTMLImageElement).src = 'https://placehold.co/300x450/1e293b/94a3b8?text=No+Image';
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">

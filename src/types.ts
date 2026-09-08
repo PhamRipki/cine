@@ -27,6 +27,11 @@ export interface Movie {
   budget: string;
   boxOffice: string;
   category: 'trending' | 'anticipated' | 'boxoffice' | 'nowplaying' | 'toprated';
+  production?: string;
+  status?: string;
+  imdbId?: string;
+  homepage?: string;
+  trailerId?: string;
   // TMDB fields
   original_title?: string;
   overview?: string;
@@ -87,4 +92,9 @@ export interface TMDBMovieDetails extends TMDBMovie {
       department: string;
     }[];
   };
+  production_companies?: { id: number; name: string; logo_path: string | null }[];
+  status?: string;
+  imdb_id?: string | null;
+  homepage?: string | null;
+  videos?: { results: { key: string; site: string; type: string }[] };
 }

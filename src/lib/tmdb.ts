@@ -1,114 +1,120 @@
 const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
-const TMDB_BASE_URL = import.meta.env.VITE_TMDB_BASE_URL;
-const TMDB_IMAGE_BASE_URL = import.meta.env.VITE_TMDB_IMAGE_BASE_URL;
+const TMDB_READ_TOKEN = import.meta.env.VITE_TMDB_READ_ACCESS_TOKEN;
+const TMDB_BASE_URL = import.meta.env.VITE_TMDB_BASE_URL || 'https://api.themoviedb.org/3';
+export const TMDB_IMAGE_BASE_URL = import.meta.env.VITE_TMDB_IMAGE_BASE_URL || 'https://image.tmdb.org/t/p';
 
-if (!TMDB_API_KEY || !TMDB_BASE_URL) {
-  throw new Error('Missing TMDB environment variables');
-}
+console.log("Initializing TMDB with key:", TMDB_API_KEY ? "EXISTS" : "MISSING");
 
-const headers = {
-  'Authorization': `Bearer ${TMDB_API_KEY}`,
-  'Content-Type': 'application/json',
+export const getImageUrl = (
+  path: string | null | undefined,
+  size: 'w200' | 'w300' | 'w500' | 'w780' | 'original' = 'w500'
+) => {
+  if (!path) return '';
+  return `${TMDB_IMAGE_BASE_URL}/${size}${path}`;
+};
+
+export const getApiUrl = (endpoint: string) => {
+  const separator = endpoint.includes('?') ? '&' : '?';
+  return `${TMDB_BASE_URL}${endpoint}${separator}api_key=${TMDB_API_KEY || ''}`;
+};
+
+export const getHeaders = (): HeadersInit => {
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+  };
+  if (TMDB_READ_TOKEN) {
+    headers['Authorization'] = `Bearer ${TMDB_READ_TOKEN}`;
+  }
+  return headers;
+};
+
+const handleResponse = async (response: Response, endpoint: string) => {
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => 'Unknown error');
+    console.error(`TMDB API Error (${endpoint}):`, response.status, errorText);
+    throw new Error(`TMDB API Error: ${response.status}`);
+  }
+  return response.json();
 };
 
 export const tmdbApi = {
+  getImageUrl,
   getTrending: async (mediaType: 'movie' | 'tv' = 'movie', timeWindow: 'day' | 'week' = 'week', page: number = 1) => {
-    const url = `${TMDB_BASE_URL}/trending/${mediaType}/${timeWindow}?page=${page}`;
-    console.log('🔗 Fetching:', url);
-    
-    const response = await fetch(url, { headers });
-    console.log('📡 Response status:', response.status, response.statusText);
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('❌ API Error:', errorText);
-      throw new Error(`TMDB API Error: ${response.status} - ${errorText}`);
+    const url = getApiUrl(`/trending/${mediaType}/${timeWindow}?page=${page}`);
+    try {
+      const response = await fetch(url, { headers: getHeaders() });
+      return await handleResponse(response, 'getTrending');
+    } catch (error) {
+      console.error('Failed to fetch trending movies:', error);
+      return { results: [] };
     }
-    
-    const data = await response.json();
-    console.log('✅ Data received:', data.results?.length, 'movies');
-    return data;
   },
 
   getPopular: async (mediaType: 'movie' | 'tv' = 'movie', page: number = 1) => {
-    const url = `${TMDB_BASE_URL}/${mediaType}/popular?page=${page}`;
-    console.log('🔗 Fetching:', url);
-    
-    const response = await fetch(url, { headers });
-    console.log('📡 Response status:', response.status, response.statusText);
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('❌ API Error:', errorText);
-      throw new Error(`TMDB API Error: ${response.status} - ${errorText}`);
+    const url = getApiUrl(`/${mediaType}/popular?page=${page}`);
+    try {
+      const response = await fetch(url, { headers: getHeaders() });
+      return await handleResponse(response, 'getPopular');
+    } catch (error) {
+      console.error('Failed to fetch popular:', error);
+      return { results: [] };
     }
-    
-    const data = await response.json();
-    console.log('✅ Data received:', data.results?.length, 'movies');
-    return data;
   },
 
   getTopRated: async (mediaType: 'movie' | 'tv' = 'movie', page: number = 1) => {
-    const url = `${TMDB_BASE_URL}/${mediaType}/top_rated?page=${page}`;
-    const response = await fetch(url, { headers });
-    
-    if (!response.ok) {
-      throw new Error(`TMDB API Error: ${response.status}`);
+    const url = getApiUrl(`/${mediaType}/top_rated?page=${page}`);
+    try {
+      const response = await fetch(url, { headers: getHeaders() });
+      return await handleResponse(response, 'getTopRated');
+    } catch (error) {
+      console.error('Failed to fetch top rated:', error);
+      return { results: [] };
     }
-    
-    return response.json();
   },
 
   getUpcoming: async (page: number = 1) => {
-    const url = `${TMDB_BASE_URL}/movie/upcoming?page=${page}`;
-    console.log('🔗 Fetching:', url);
-    
-    const response = await fetch(url, { headers });
-    console.log('📡 Response status:', response.status, response.statusText);
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('❌ API Error:', errorText);
-      throw new Error(`TMDB API Error: ${response.status} - ${errorText}`);
+    const url = getApiUrl(`/movie/upcoming?page=${page}`);
+    try {
+      const response = await fetch(url, { headers: getHeaders() });
+      return await handleResponse(response, 'getUpcoming');
+    } catch (error) {
+      console.error('Failed to fetch upcoming:', error);
+      return { results: [] };
     }
-    
-    const data = await response.json();
-    console.log('✅ Data received:', data.results?.length, 'movies');
-    return data;
   },
 
   getNowPlaying: async (page: number = 1) => {
-    const url = `${TMDB_BASE_URL}/movie/now_playing?page=${page}`;
-    console.log('🔗 Fetching:', url);
-    
-    const response = await fetch(url, { headers });
-    console.log('📡 Response status:', response.status, response.statusText);
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('❌ API Error:', errorText);
-      throw new Error(`TMDB API Error: ${response.status} - ${errorText}`);
+    const url = getApiUrl(`/movie/now_playing?page=${page}`);
+    try {
+      const response = await fetch(url, { headers: getHeaders() });
+      return await handleResponse(response, 'getNowPlaying');
+    } catch (error) {
+      console.error('Failed to fetch now playing:', error);
+      return { results: [] };
     }
-    
-    const data = await response.json();
-    console.log('✅ Data received:', data.results?.length, 'movies');
-    return data;
   },
 
   getMovieDetails: async (movieId: number) => {
-    const response = await fetch(
-      `${TMDB_BASE_URL}/movie/${movieId}?append_to_response=credits,videos`,
-      { headers }
-    );
-    return response.json();
+    const url = getApiUrl(`/movie/${movieId}?append_to_response=credits,videos,similar`);
+    try {
+      const response = await fetch(url, { headers: getHeaders() });
+      return await handleResponse(response, 'getMovieDetails');
+    } catch (error) {
+      console.error('TMDB Error:', error);
+      console.error('Failed to fetch movie details:', error);
+      return null;
+    }
   },
 
   searchMovies: async (query: string) => {
-    const response = await fetch(
-      `${TMDB_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`,
-      { headers }
-    );
-    return response.json();
+    const url = getApiUrl(`/search/movie?query=${encodeURIComponent(query)}`);
+    try {
+      const response = await fetch(url, { headers: getHeaders() });
+      return await handleResponse(response, 'searchMovies');
+    } catch (error) {
+      console.error('Failed to search movies:', error);
+      return { results: [] };
+    }
   },
 
   discoverMovies: async (params: {
@@ -119,15 +125,59 @@ export const tmdbApi = {
     sort_by?: string;
   }) => {
     const queryParams = new URLSearchParams(params as Record<string, string>).toString();
-    const response = await fetch(
-      `${TMDB_BASE_URL}/discover/movie?${queryParams}`,
-      { headers }
-    );
-    return response.json();
+    const url = getApiUrl(`/discover/movie?${queryParams}`);
+    try {
+      const response = await fetch(url, { headers: getHeaders() });
+      return await handleResponse(response, 'discoverMovies');
+    } catch (error) {
+      console.error('Failed to discover movies:', error);
+      return { results: [] };
+    }
   },
 
-  getImageUrl: (path: string | null, size: 'w200' | 'w300' | 'w500' | 'w780' | 'original' = 'w500') => {
-    if (!path) return 'https://images.pexels.com/photos/1820559/pexels-photo-1820559.jpeg?auto=compress&cs=tinysrgb&w=400';
-    return `${TMDB_IMAGE_BASE_URL}/${size}${path}`;
+  getMoviesByGenre: async (genreId: number, page: number = 1) => {
+    const url = getApiUrl(`/discover/movie?with_genres=${genreId}&sort_by=popularity.desc&page=${page}`);
+    try {
+      const response = await fetch(url, { headers: getHeaders() });
+      return await handleResponse(response, 'getMoviesByGenre');
+    } catch (error) {
+      console.error('Failed to fetch movies by genre:', error);
+      return { results: [] };
+    }
+  },
+
+  getGenres: async () => {
+    const url = getApiUrl(`/genre/movie/list`);
+    try {
+      const response = await fetch(url, { headers: getHeaders() });
+      return await handleResponse(response, 'getGenres');
+    } catch (error) {
+      console.error('Failed to fetch genres:', error);
+      return { genres: [] };
+    }
+  },
+
+  getMovieVideos: async (movieId: number) => {
+    const url = getApiUrl(`/movie/${movieId}/videos`);
+    try {
+      const response = await fetch(url, { headers: getHeaders() });
+      const data = await handleResponse(response, 'getMovieVideos');
+      return data.results.filter((v: any) => v.site === 'YouTube' && v.type === 'Trailer');
+    } catch (error) {
+      console.error('Failed to fetch movie videos:', error);
+      return [];
+    }
+  },
+
+  getSimilarMovies: async (movieId: number) => {
+    const url = getApiUrl(`/movie/${movieId}/similar`);
+    try {
+      const response = await fetch(url, { headers: getHeaders() });
+      const data = await handleResponse(response, 'getSimilarMovies');
+      return data.results;
+    } catch (error) {
+      console.error('Failed to fetch similar movies:', error);
+      return [];
+    }
   },
 };

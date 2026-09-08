@@ -1,139 +1,69 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
-export const useWatchlist = (userId?: string | null) => {
-  const [watchlist, setWatchlist] = useState<Set<number>>(new Set());
-  const [loading, setLoading] = useState(true);
+const STORAGE_KEY_PREFIX = 'cineview_watchlist';
 
+const getStorageKey = (userId?: string) => {
+  return userId ? `${STORAGE_KEY_PREFIX}_${userId}` : `${STORAGE_KEY_PREFIX}_guest`;
+};
+
+export const useWatchlist = (userId?: string) => {
+  const [watchlist, setWatchlist] = useState<Set<number>>(new Set());
+
+  // Load initial state
   useEffect(() => {
-    loadWatchlist();
+    const key = getStorageKey(userId);
+    const stored = localStorage.getItem(key);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        const uniqueIds = Array.from(new Set(parsed)) as number[];
+        setWatchlist(new Set(uniqueIds));
+        localStorage.setItem(key, JSON.stringify(uniqueIds));
+      } catch (e) {
+        console.error('Failed to parse watchlist from storage:', e);
+      }
+    } else {
+      setWatchlist(new Set());
+    }
   }, [userId]);
 
-  const loadWatchlist = async () => {
-    try {
-      if (userId) {
-        // Load from Supabase if user is logged in
-        const { data, error } = await supabase
-          .from('watchlist')
-          .select('movie_id')
-          .eq('user_id', userId);
+  // Persist state on change
+  useEffect(() => {
+    const key = getStorageKey(userId);
+    localStorage.setItem(key, JSON.stringify(Array.from(watchlist)));
+  }, [watchlist, userId]);
 
-        if (error) throw error;
-
-        if (data) {
-          const movieIds = data.map(item => item.movie_id);
-          setWatchlist(new Set(movieIds));
-          // Also save to localStorage as backup
-          localStorage.setItem('watchlist', JSON.stringify(movieIds));
-        }
-      } else {
-        // Load from localStorage if not logged in
-        const stored = localStorage.getItem('watchlist');
-        if (stored) {
-          setWatchlist(new Set(JSON.parse(stored)));
-        }
-      }
-    } catch (error) {
-      console.error('Error loading watchlist:', error);
-      // Fallback to localStorage
-      const stored = localStorage.getItem('watchlist');
-      if (stored) {
-        setWatchlist(new Set(JSON.parse(stored)));
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const toggleWatchlist = async (movieId: number) => {
-    const isInWatchlist = watchlist.has(movieId);
-
-    // Optimistic update
+  const toggleWatchlist = (movieId: number) => {
     setWatchlist((prev) => {
-      const next = new Set(prev);
-      if (isInWatchlist) {
-        next.delete(movieId);
+      const newSet = new Set(prev);
+      if (newSet.has(movieId)) {
+        newSet.delete(movieId);
       } else {
-        next.add(movieId);
+        newSet.add(movieId);
       }
-      
-      // Save to localStorage
-      localStorage.setItem('watchlist', JSON.stringify([...next]));
-      return next;
+      return newSet;
     });
-
-    // Sync with Supabase if user is logged in
-    if (userId) {
-      try {
-        if (isInWatchlist) {
-          // Remove from watchlist
-          await supabase
-            .from('watchlist')
-            .delete()
-            .eq('user_id', userId)
-            .eq('movie_id', movieId);
-        } else {
-          // Add to watchlist
-          await supabase
-            .from('watchlist')
-            .insert({
-              user_id: userId,
-              movie_id: movieId,
-              added_at: new Date().toISOString(),
-            });
-        }
-      } catch (error) {
-        console.error('Error syncing watchlist with Supabase:', error);
-        // Revert optimistic update on error
-        setWatchlist((prev) => {
-          const next = new Set(prev);
-          if (isInWatchlist) {
-            next.add(movieId);
-          } else {
-            next.delete(movieId);
-          }
-          localStorage.setItem('watchlist', JSON.stringify([...next]));
-          return next;
-        });
-      }
-    }
   };
 
-  const syncWithSupabase = async (newUserId: string) => {
+  const syncWithSupabase = async (uid: string) => {
     try {
-      // Get local watchlist
-      const localWatchlist = Array.from(watchlist);
-
-      // Upload local watchlist to Supabase
-      if (localWatchlist.length > 0) {
-        const watchlistData = localWatchlist.map(movieId => ({
-          user_id: newUserId,
-          movie_id: movieId,
-          added_at: new Date().toISOString(),
-        }));
-
-        await supabase
-          .from('watchlist')
-          .upsert(watchlistData, { onConflict: 'user_id,movie_id' });
+      const key = getStorageKey(uid);
+      const stored = localStorage.getItem(key);
+      if (stored) {
+        const ids: number[] = JSON.parse(stored);
+        // Optional: sync logic to Supabase table if exists
+        // For now, we just confirm the local state is in sync
+        setWatchlist(new Set(ids));
       }
-
-      // Then load from Supabase (in case user has data from another device)
-      const { data, error } = await supabase
-        .from('watchlist')
-        .select('movie_id')
-        .eq('user_id', newUserId);
-
-      if (error) throw error;
-
-      if (data) {
-        const movieIds = data.map(item => item.movie_id);
-        setWatchlist(new Set(movieIds));
-        localStorage.setItem('watchlist', JSON.stringify(movieIds));
-      }
-    } catch (error) {
-      console.error('Error syncing watchlist:', error);
+    } catch (err) {
+      console.error('Watchlist sync failed:', err);
     }
   };
 
-  return { watchlist, toggleWatchlist, syncWithSupabase, loading };
+  const clearWatchlist = () => {
+    setWatchlist(new Set());
+  };
+
+  return { watchlist, toggleWatchlist, syncWithSupabase, clearWatchlist };
 };

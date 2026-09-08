@@ -9,6 +9,8 @@ interface WatchlistPanelProps {
 }
 
 export default function WatchlistPanel({ movies, onClose, onMovieClick, onRemove }: WatchlistPanelProps) {
+  const uniqueMovies = Array.from(new Map(movies.map(m => [m.id, m])).values());
+
   return (
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
@@ -34,7 +36,7 @@ export default function WatchlistPanel({ movies, onClose, onMovieClick, onRemove
 
         {/* Content */}
         <div className="flex-1 p-4">
-          {movies.length === 0 ? (
+          {uniqueMovies.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-64 text-center">
               <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center mb-4">
                 <Bookmark size={24} className="text-slate-600" />
@@ -44,7 +46,7 @@ export default function WatchlistPanel({ movies, onClose, onMovieClick, onRemove
             </div>
           ) : (
             <div className="space-y-3">
-              {movies.map((movie) => (
+              {uniqueMovies.map((movie) => (
                 <div
                   key={movie.id}
                   className="flex items-center gap-3 bg-slate-900 rounded-xl p-3 border border-white/5 hover:border-indigo-500/20 transition-all cursor-pointer group"
@@ -54,6 +56,9 @@ export default function WatchlistPanel({ movies, onClose, onMovieClick, onRemove
                     src={movie.poster}
                     alt={movie.title}
                     className="w-12 h-16 object-cover rounded-lg flex-shrink-0"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://placehold.co/300x450/1e293b/94a3b8?text=No+Image';
+                    }}
                   />
                   <div className="flex-1 min-w-0">
                     <h3 className="text-white text-sm font-semibold line-clamp-1 group-hover:text-indigo-400 transition-colors">

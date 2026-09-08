@@ -126,7 +126,7 @@ export default function GenreBrowser({ movies, onMovieClick, onWatchlistToggle, 
                   alt={movie.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x450/1e293b/94a3b8?text=No+Image';
+                    (e.target as HTMLImageElement).src = 'https://placehold.co/300x450/1e293b/94a3b8?text=No+Image';
                   }}
                 />
                 

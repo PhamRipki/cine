@@ -42,6 +42,9 @@ export default function SearchResults({ movies, query, onMovieClick }: SearchRes
                 src={movie.poster}
                 alt={movie.title}
                 className="w-16 h-24 object-cover rounded-lg flex-shrink-0"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://placehold.co/300x450/1e293b/94a3b8?text=No+Image';
+                }}
               />
               <div className="flex-1 min-w-0">
                 <h3 className="text-white font-semibold leading-tight group-hover:text-indigo-400 transition-colors line-clamp-2">

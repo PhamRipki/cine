@@ -17,6 +17,9 @@ export default function HeroSpotlight({ movie, onMovieClick, onWatchlistAdd, isI
         alt={movie.title}
         className="absolute inset-0 w-full h-full object-cover object-center scale-105"
         style={{ filter: 'brightness(0.35)' }}
+        onError={(e) => {
+          (e.target as HTMLImageElement).src = 'https://placehold.co/1280x720/1e293b/94a3b8?text=No+Cover+Image';
+        }}
       />
 
       {/* Gradient overlays */}
@@ -32,27 +35,16 @@ export default function HeroSpotlight({ movie, onMovieClick, onWatchlistAdd, isI
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center pt-20 sm:pt-24 lg:pt-32">
         <div className="max-w-2xl">
           {/* Meta badges */}
           <div className="flex items-center gap-2 mb-4 flex-wrap">
-            <span className="bg-indigo-500 text-black text-xs font-bold px-2 py-0.5 rounded">
-              {movie.pgRating}
-            </span>
-            <span className="text-slate-400 text-sm">{movie.year}</span>
-            <span className="text-slate-600">•</span>
-            <span className="flex items-center gap-1 text-slate-400 text-sm">
+            <span className="text-zinc-300 text-sm">{movie.year}</span>
+            <span className="text-zinc-600">•</span>
+            <span className="flex items-center gap-1 text-zinc-300 text-sm">
               <Clock size={12} />
               {Math.floor(movie.runtime / 60)}h {movie.runtime % 60}m
             </span>
-            <span className="text-slate-600">•</span>
-            <div className="flex items-center gap-1">
-              {movie.genre.map((g) => (
-                <span key={g} className="text-xs text-slate-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">
-                  {g}
-                </span>
-              ))}
-            </div>
           </div>
 
           {/* Title */}
@@ -61,39 +53,17 @@ export default function HeroSpotlight({ movie, onMovieClick, onWatchlistAdd, isI
           </h1>
 
           {/* Synopsis */}
-          <p className="text-slate-300 text-base leading-relaxed mb-6 line-clamp-3">
+          <p className="text-zinc-300 text-base leading-relaxed mb-6 line-clamp-3">
             {movie.synopsis}
           </p>
 
           {/* Rating Badges */}
           <div className="flex items-center gap-3 mb-8">
-            {/* CineData Score */}
-            <div className="flex items-center gap-2 bg-slate-700/90 border border-indigo-500/30 rounded-xl px-4 py-3">
-              <Star size={18} className="text-indigo-400" fill="currentColor" />
+            <div className="flex items-center gap-2 bg-black/60 border border-zinc-800 rounded-lg px-4 py-2">
+              <Star size={20} className="text-[#3b82f6]" fill="#3b82f6" />
               <div>
-                <div className="text-white font-bold text-lg leading-none">{movie.rating}<span className="text-slate-500 text-sm font-normal">/10</span></div>
-                <div className="text-slate-500 text-xs mt-0.5">CineData Score</div>
-              </div>
-            </div>
-
-            {/* Critic Score */}
-            <div className={`flex items-center gap-2 rounded-xl px-4 py-3 border ${
-              movie.criticScore >= 80
-                ? 'bg-emerald-500/10 border-emerald-500/30'
-                : movie.criticScore >= 60
-                ? 'bg-yellow-500/10 border-yellow-500/30'
-                : 'bg-red-500/10 border-red-500/30'
-            }`}>
-              <Shield size={18} className={
-                movie.criticScore >= 80 ? 'text-emerald-400' :
-                movie.criticScore >= 60 ? 'text-yellow-400' : 'text-red-400'
-              } />
-              <div>
-                <div className={`font-bold text-lg leading-none ${
-                  movie.criticScore >= 80 ? 'text-emerald-400' :
-                  movie.criticScore >= 60 ? 'text-yellow-400' : 'text-red-400'
-                }`}>{movie.criticScore}</div>
-                <div className="text-slate-500 text-xs mt-0.5">Critic Score</div>
+                <div className="text-white font-bold text-lg leading-none">{movie.rating}<span className="text-zinc-500 text-sm font-normal">/10</span></div>
+                <div className="text-zinc-400 text-xs mt-0.5">Rating</div>
               </div>
             </div>
           </div>
@@ -102,21 +72,21 @@ export default function HeroSpotlight({ movie, onMovieClick, onWatchlistAdd, isI
           <div className="flex items-center gap-3">
             <button
               onClick={() => onMovieClick(movie)}
-              className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-black font-semibold px-6 py-3 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+              className="flex items-center gap-2 bg-[#3b82f6] hover:bg-[#2563eb] text-white font-bold px-6 py-3 rounded-lg transition-all"
             >
               <Play size={16} fill="currentColor" />
-              View Details
+              Watch Trailer
             </button>
             <button
               onClick={() => onWatchlistAdd(movie)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-xl border font-semibold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] ${
+              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold transition-all ${
                 isInWatchlist
-                  ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-400'
-                  : 'bg-white/5 border-white/15 text-white hover:bg-white/10'
+                  ? 'bg-zinc-800 text-[#3b82f6] border border-[#3b82f6]/30'
+                  : 'bg-zinc-800 hover:bg-zinc-700 text-white'
               }`}
             >
-              <Bookmark size={16} fill={isInWatchlist ? 'currentColor' : 'none'} />
-              {isInWatchlist ? 'Saved' : 'Add to Watchlist'}
+              <Bookmark size={16} fill={isInWatchlist ? '#3b82f6' : 'none'} />
+              {isInWatchlist ? 'In Watchlist' : 'Add to Watchlist'}
             </button>
           </div>
         </div>

@@ -1,4 +1,5 @@
-import { Star, Clock, Bookmark, Shield, TrendingUp, DollarSign } from 'lucide-react';
+import { useState } from 'react';
+import { Star, Clock, Bookmark, Shield, TrendingUp, DollarSign, Film } from 'lucide-react';
 import { Movie, TabType } from '../types';
 
 interface MovieCardProps {
@@ -11,96 +12,79 @@ interface MovieCardProps {
 }
 
 export default function MovieCard({ movie, rank, onClick, onWatchlistToggle, isInWatchlist, activeTab }: MovieCardProps) {
+  const [imageError, setImageError] = useState(false);
+
   return (
     <div
-      className="group relative bg-slate-800 rounded-xl overflow-hidden border border-white/5 hover:border-indigo-500/25 transition-all duration-300 cursor-pointer flex-shrink-0 w-52"
+      className="group relative bg-[#1a1a1a] rounded-md overflow-hidden border border-zinc-800 hover:border-zinc-700 transition-all duration-300 cursor-pointer flex-shrink-0 w-48 shadow-lg"
       onClick={() => onClick(movie)}
     >
       {/* Poster */}
-      <div className="relative overflow-hidden aspect-[2/3]">
-        <img
-          src={movie.poster}
-          alt={movie.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[slate-800] via-transparent to-transparent opacity-60" />
+      <div className="relative overflow-hidden aspect-[2/3] bg-gradient-to-br from-slate-800 to-slate-950 flex flex-col items-center justify-center p-4 text-center">
+        {!imageError && movie.poster ? (
+          <img
+            src={movie.poster}
+            alt={movie.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 absolute inset-0"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center h-full w-full p-2 select-none">
+            <div className="w-12 h-12 rounded-full bg-indigo-500/10 flex items-center justify-center mb-3 text-indigo-400 group-hover:scale-110 transition-transform">
+              <Film size={24} />
+            </div>
+            <span className="text-xs font-bold text-slate-300 line-clamp-2 leading-tight">
+              {movie.title}
+            </span>
+            <span className="text-[10px] text-slate-500 mt-1">{movie.year}</span>
+          </div>
+        )}
+
+        {/* Watchlist button (IMDb ribbon style) */}
+        <button
+          onClick={(e) => { e.stopPropagation(); onWatchlistToggle(movie); }}
+          className={`absolute top-0 left-0 p-2 backdrop-blur-sm transition-all z-10 ${
+            isInWatchlist ? 'bg-[#3b82f6] text-white' : 'bg-black/60 text-white hover:bg-black/80'
+          }`}
+          style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%)' }}
+        >
+          <Bookmark size={16} fill={isInWatchlist ? 'white' : 'none'} />
+        </button>
 
         {/* Rank badge */}
         {rank && (
-          <div className="absolute top-2 left-2 bg-black/70 backdrop-blur-sm text-indigo-400 text-xs font-bold px-2 py-1 rounded-lg border border-indigo-500/30">
+          <div className="absolute top-2 right-2 bg-black/80 text-[#3b82f6] text-xs font-bold px-2 py-0.5 rounded border border-[#3b82f6]/35 z-10">
             #{rank}
           </div>
         )}
-
-        {/* Tab-specific badge */}
-        {activeTab === 'trending' && (
-          <div className="absolute top-2 right-2 bg-rose-500/80 backdrop-blur-sm text-white text-xs font-bold px-2 py-1 rounded-lg flex items-center gap-1">
-            <TrendingUp size={10} />
-            Hot
-          </div>
-        )}
-        {activeTab === 'boxoffice' && (
-          <div className="absolute top-2 right-2 bg-emerald-500/80 backdrop-blur-sm text-white text-xs font-bold px-2 py-1 rounded-lg flex items-center gap-1">
-            <DollarSign size={10} />
-            {movie.boxOffice}
-          </div>
-        )}
-
-        {/* Watchlist button */}
-        <button
-          onClick={(e) => { e.stopPropagation(); onWatchlistToggle(movie); }}
-          className={`absolute bottom-2 right-2 p-1.5 rounded-lg backdrop-blur-sm transition-all ${
-            isInWatchlist
-              ? 'bg-indigo-500/90 text-black'
-              : 'bg-black/60 text-white opacity-0 group-hover:opacity-100'
-          }`}
-        >
-          <Bookmark size={14} fill={isInWatchlist ? 'currentColor' : 'none'} />
-        </button>
-
-        {/* PG Rating */}
-        <div className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-xs text-slate-300 px-1.5 py-0.5 rounded border border-white/10">
-          {movie.pgRating}
-        </div>
       </div>
 
       {/* Info */}
-      <div className="p-3">
-        <h3 className="text-white text-sm font-semibold leading-tight mb-1 line-clamp-1 group-hover:text-indigo-400 transition-colors">
+      <div className="p-3 bg-[#1a1a1a]">
+        {/* Rating row */}
+        <div className="flex items-center gap-1 mb-1">
+          <Star size={14} className="text-[#3b82f6]" fill="#3b82f6" />
+          <span className="text-white text-xs font-bold">{movie.rating}</span>
+          <span className="text-zinc-500 text-[10px]">/10</span>
+        </div>
+
+        <h3 className="text-white text-sm font-semibold leading-tight mb-1 line-clamp-1 group-hover:text-[#3b82f6] transition-colors">
           {movie.title}
         </h3>
-        <div className="text-slate-500 text-xs mb-2">{movie.year}</div>
+        <div className="text-zinc-400 text-xs mb-3">{movie.year}</div>
 
-        {/* Ratings row */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            <Star size={12} className="text-indigo-400" fill="currentColor" />
-            <span className="text-indigo-400 text-xs font-bold">{movie.rating}</span>
-          </div>
-          <div className={`flex items-center gap-1 text-xs font-semibold px-1.5 py-0.5 rounded ${
-            movie.criticScore >= 80 ? 'bg-emerald-500/15 text-emerald-400' :
-            movie.criticScore >= 60 ? 'bg-yellow-500/15 text-yellow-400' :
-            'bg-red-500/15 text-red-400'
-          }`}>
-            <Shield size={10} />
-            {movie.criticScore}
-          </div>
-        </div>
-
-        {/* Runtime */}
-        <div className="flex items-center gap-1 mt-2 text-slate-600 text-xs">
-          <Clock size={10} />
-          {Math.floor(movie.runtime / 60)}h {movie.runtime % 60}m
-        </div>
-
-        {/* Genres */}
-        <div className="flex flex-wrap gap-1 mt-2">
-          {movie.genre.slice(0, 2).map((g) => (
-            <span key={g} className="text-[10px] text-slate-500 bg-white/5 px-1.5 py-0.5 rounded">
-              {g}
-            </span>
-          ))}
-        </div>
+        {/* Add to Watchlist button IMDb style */}
+        <button
+          onClick={(e) => { e.stopPropagation(); onWatchlistToggle(movie); }}
+          className={`w-full py-1.5 px-2 rounded font-semibold text-xs flex items-center justify-center gap-1 transition-colors ${
+            isInWatchlist
+              ? 'bg-zinc-800 text-[#3b82f6] border border-[#3b82f6]/30'
+              : 'bg-zinc-800 hover:bg-zinc-700 text-[#3b82f6]'
+          }`}
+        >
+          <Bookmark size={12} fill={isInWatchlist ? '#3b82f6' : 'none'} />
+          {isInWatchlist ? 'Watchlisted' : 'Watchlist'}
+        </button>
       </div>
     </div>
   );

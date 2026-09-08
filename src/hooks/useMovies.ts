@@ -72,7 +72,7 @@ export const useMovies = () => {
       } catch (err) {
         console.error('❌ Error fetching movies:', err);
         console.error('Error details:', err instanceof Error ? err.message : String(err));
-        setError('Failed to fetch movies');
+        setError('Gagal terhubung ke TMDB API. Periksa koneksi atau sertakan VPN/DNS 1.1.1.1');
       } finally {
         setLoading(false);
         console.log('🏁 Loading complete');
