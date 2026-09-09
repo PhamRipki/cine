@@ -4,6 +4,7 @@ import { Movie } from '../types';
 import { tmdbApi } from '../lib/tmdb';
 import { mapTMDBDetailsToMovie, mapTMDBToMovie } from '../lib/movieMapper';
 import SkeletonCard from './SkeletonCard';
+import ReviewSection from './ReviewSection';
 
 export default function MovieDetail({ movie, onClose, onWatchlistToggle, isInWatchlist, onSelectMovie }: MovieDetailProps) {
   const [currentMovie, setCurrentMovie] = useState<Movie>(movie);
@@ -325,6 +326,9 @@ export default function MovieDetail({ movie, onClose, onWatchlistToggle, isInWat
               <p className="text-slate-500 text-sm">No similar movies found.</p>
             )}
           </div>
+
+          {/* Review Section */}
+          <ReviewSection movieId={fullMovie.id} />
         </div>
       </div>
     </div>
