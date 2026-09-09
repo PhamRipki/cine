@@ -9,7 +9,9 @@ interface WatchlistPanelProps {
 }
 
 export default function WatchlistPanel({ movies, onClose, onMovieClick, onRemove }: WatchlistPanelProps) {
-  const uniqueMovies = Array.from(new Map(movies.map(m => [m.id, m])).values());
+  const uniqueWatchlist = Array.from(
+    new Map(movies.map((movie) => [movie.id, movie])).values()
+  );
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
@@ -23,9 +25,9 @@ export default function WatchlistPanel({ movies, onClose, onMovieClick, onRemove
           <div className="flex items-center gap-2">
             <Bookmark size={16} className="text-indigo-400" fill="currentColor" />
             <h2 className="text-white font-bold text-base">My Watchlist</h2>
-            {movies.length > 0 && (
+            {uniqueWatchlist.length > 0 && (
               <span className="bg-indigo-500 text-black text-xs font-bold px-2 py-0.5 rounded-full">
-                {movies.length}
+                {uniqueWatchlist.length}
               </span>
             )}
           </div>
@@ -36,7 +38,7 @@ export default function WatchlistPanel({ movies, onClose, onMovieClick, onRemove
 
         {/* Content */}
         <div className="flex-1 p-4">
-          {uniqueMovies.length === 0 ? (
+          {uniqueWatchlist.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-64 text-center">
               <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center mb-4">
                 <Bookmark size={24} className="text-slate-600" />
@@ -46,7 +48,7 @@ export default function WatchlistPanel({ movies, onClose, onMovieClick, onRemove
             </div>
           ) : (
             <div className="space-y-3">
-              {uniqueMovies.map((movie) => (
+              {uniqueWatchlist.map((movie) => (
                 <div
                   key={movie.id}
                   className="flex items-center gap-3 bg-slate-900 rounded-xl p-3 border border-white/5 hover:border-indigo-500/20 transition-all cursor-pointer group"
